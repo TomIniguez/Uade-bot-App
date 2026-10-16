@@ -4,62 +4,46 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import com.example.tpo_bot_uade_app.data.Resultado
-import com.example.tpo_bot_uade_app.data.RobotRepository
-import com.example.tpo_bot_uade_app.data.crearApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.tpo_bot_uade_app.ui.ConexionScreen
+import com.example.tpo_bot_uade_app.ui.ControlScreen
+import com.example.tpo_bot_uade_app.ui.RobotViewModel
 import com.example.tpo_bot_uade_app.ui.theme.TPO_Bot_UADE_AppTheme
-import kotlinx.coroutines.launch
 
+// Sólo arranca la UI: elige la pantalla según si hay sesión.
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             TPO_Bot_UADE_AppTheme {
+                val viewModel: RobotViewModel = viewModel()
+                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    PruebaEstado(Modifier.padding(innerPadding).padding(16.dp))
+                    if (uiState.conectado) {
+                        ControlScreen(
+                            uiState = uiState,
+                            onDesconectar = viewModel::desconectar,
+                            modifier = Modifier.padding(innerPadding)
+                        )
+                    } else {
+                        ConexionScreen(
+                            uiState = uiState,
+                            onCambiarIp = viewModel::cambiarIp,
+                            onCambiarEquipo = viewModel::cambiarEquipo,
+                            onConectar = viewModel::conectar,
+                            modifier = Modifier.padding(innerPadding)
+                        )
+                    }
                 }
             }
         }
-    }
-}
-
-// Pantalla temporal de la Fase 1: sólo para probar que hablamos con el backend.
-@Composable
-fun PruebaEstado(modifier: Modifier = Modifier) {
-    var ip by remember { mutableStateOf("10.0.2.2:8000") }
-    var texto by remember { mutableStateOf("Sin consultar") }
-    val scope = rememberCoroutineScope()
-
-    Column(modifier) {
-        OutlinedTextField(value = ip, onValueChange = { ip = it }, label = { Text("IP:puerto") })
-        Button(onClick = {
-            // Las llamadas de red van en una coroutine, nunca en el hilo principal.
-            scope.launch {
-                texto = when (val r = RobotRepository(crearApi(ip)).estado()) {
-                    is Resultado.Ok -> {
-                        val e = r.datos
-                        "Robot: ${e.tipo_robot} (${e.nombre_robot})\nBatería: ${e.bateria}%\nConectado: ${e.conectado}"
-                    }
-                    is Resultado.Error -> r.mensaje
-                }
-            }
-        }) { Text("Consultar /estado") }
-        Text(texto)
     }
 }
