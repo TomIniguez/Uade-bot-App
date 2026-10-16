@@ -1,44 +1,44 @@
 # Uade-bot-App
 
-TP04 - Desarrollo de Aplicaciones I (UADE). Android app (Kotlin + Jetpack Compose) that works as a remote control for a Unitree robot (G1 / Go2).
+TP04 - Desarrollo de Aplicaciones I (UADE). App Android (Kotlin + Jetpack Compose) que funciona como control remoto de un robot Unitree (G1 / Go2).
 
-The app is developed against the course simulator and, on visit day, controls the real robot by changing only the backend IP.
+La app se desarrolla contra el simulador de la cátedra y, el día de la visita, controla el robot real cambiando solamente la IP del backend.
 
-## Features
-- Connect to the backend (`http://<IP>:8000`) and start a session with a team name
-- Move the robot with hold-to-move buttons: forward, backward, turn in place, strafe and curves (`/mover` is repeated every 200 ms while the button is pressed)
-- Stop button, plus automatic stop when the app goes to the background
-- Actions loaded dynamically from the backend (wave, and shake hand on the G1)
-- Status panel: battery, robot connection, robot type and team in control (refreshed every 2 s)
-- Readable error messages (session expired, robot busy, no connection, ...)
+## Funcionalidades
+- Conexión al backend (`http://<IP>:8000`) e inicio de sesión con el nombre del equipo
+- Movimiento del robot con botones de "mantener apretado": adelante, atrás, giro sobre su eje, costado y curvas (mientras el botón está apretado se repite `/mover` cada 200 ms)
+- Botón de parar, y parada automática cuando la app pasa a segundo plano
+- Acciones cargadas dinámicamente desde el backend (saludar y, en el G1, dar la mano)
+- Panel de estado: batería, conexión del robot, tipo de robot y equipo que tiene el control (se actualiza cada 2 s)
+- Mensajes de error legibles (sesión vencida, robot ocupado, sin conexión, etc.)
 
-## Stack
-Kotlin, Jetpack Compose, Material 3, MVVM (ViewModel + StateFlow), Retrofit + OkHttp + Gson, minSdk 26. The screen is locked to portrait.
+## Tecnologías
+Kotlin, Jetpack Compose, Material 3, MVVM (ViewModel + StateFlow), Retrofit + OkHttp + Gson, minSdk 26. La pantalla está bloqueada en vertical.
 
-## Project structure
+## Estructura del proyecto
 ```
 app/src/main/java/com/example/tpo_bot_uade_app/
-├── MainActivity.kt        // starts the UI, picks the screen
-├── data/                  // models, Retrofit API, repository (the only one talking HTTP)
-└── ui/                    // ViewModel, UiState, screens and components
+├── MainActivity.kt        // arranca la UI y elige la pantalla
+├── data/                  // modelos, API de Retrofit y repository (el único que habla HTTP)
+└── ui/                    // ViewModel, UiState, pantallas y componentes
 ```
 
-## How to run
-1. Start the backend / simulator (`INICIAR_TP04`). API docs live at `http://<IP>:8000/docs`.
-2. Open the project in Android Studio and run the `app` configuration.
-3. On the connection screen enter the backend address and a team name, then tap **Conectar**.
+## Cómo correr la app
+1. Levantar el backend / simulador (`INICIAR_TP04`). La documentación de la API está en `http://<IP>:8000/docs`.
+2. Abrir el proyecto en Android Studio y ejecutar la configuración `app`.
+3. En la pantalla de conexión ingresar la dirección del backend y el nombre del equipo, y tocar **Conectar**.
 
-### Which IP to use
-| Where the app runs | Address |
+### Qué IP usar
+| Dónde corre la app | Dirección |
 |---|---|
-| Android Studio emulator | `10.0.2.2:8000` (not `localhost`: inside the emulator that is the emulator itself) |
-| Physical phone | The IP printed by the simulator script, with the phone on the **same WiFi** |
-| Visit day (real robot) | The IP given by the professor, with the phone on the robot's WiFi |
+| Emulador de Android Studio | `10.0.2.2:8000` (no `localhost`: dentro del emulador, `localhost` es el propio emulador) |
+| Celular físico | La IP que muestra el script del simulador, con el celular en la **misma red WiFi** |
+| Día de la visita (robot real) | La IP que da el profesor, con el celular en la WiFi del robot |
 
-If the phone cannot connect, open `http://<IP>:8000/docs` in the phone browser to check network and firewall.
+Si el celular no logra conectarse, abrir `http://<IP>:8000/docs` en el navegador del celular para verificar la red y el firewall.
 
-### Debug APK
-`Build > Build APK(s)`, or `./gradlew assembleDebug`. The file is generated at `app/build/outputs/apk/debug/app-debug.apk`.
+### APK de debug
+`Build > Build APK(s)`, o `./gradlew assembleDebug`. El archivo se genera en `app/build/outputs/apk/debug/app-debug.apk`.
 
-## Workflow
-Each feature is developed in its own branch and merged into `main` only after review.
+## Flujo de trabajo
+Cada funcionalidad se desarrolla en su propia rama y se mergea a `main` recién después de la revisión.
