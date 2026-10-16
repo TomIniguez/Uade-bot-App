@@ -19,6 +19,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.tpo_bot_uade_app.data.Resultado
+import com.example.tpo_bot_uade_app.data.RobotRepository
 import com.example.tpo_bot_uade_app.data.crearApi
 import com.example.tpo_bot_uade_app.ui.theme.TPO_Bot_UADE_AppTheme
 import kotlinx.coroutines.launch
@@ -49,14 +51,12 @@ fun PruebaEstado(modifier: Modifier = Modifier) {
         Button(onClick = {
             // Las llamadas de red van en una coroutine, nunca en el hilo principal.
             scope.launch {
-                texto = try {
-                    val r = crearApi(ip).estado()
-                    val e = r.body()
-                    if (r.isSuccessful && e != null) {
+                texto = when (val r = RobotRepository(crearApi(ip)).estado()) {
+                    is Resultado.Ok -> {
+                        val e = r.datos
                         "Robot: ${e.tipo_robot} (${e.nombre_robot})\nBatería: ${e.bateria}%\nConectado: ${e.conectado}"
-                    } else "Error HTTP ${r.code()}"
-                } catch (ex: Exception) {
-                    "No se pudo conectar: ${ex.message}"
+                    }
+                    is Resultado.Error -> r.mensaje
                 }
             }
         }) { Text("Consultar /estado") }
