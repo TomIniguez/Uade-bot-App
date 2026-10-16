@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.tpo_bot_uade_app.ui.componentes.PanelEstado
 
 // Pantalla 1: IP del backend + nombre del equipo.
 @Composable
@@ -55,6 +56,9 @@ fun ConexionScreen(
         ) { Text("Conectar") }
 
         if (uiState.cargando) CircularProgressIndicator()
+
+        // Útil para ver si el robot está libre antes de conectar.
+        PanelEstado(estado = uiState.estado, miEquipo = "")
 
         uiState.mensaje?.let {
             Text(it, color = MaterialTheme.colorScheme.error)
