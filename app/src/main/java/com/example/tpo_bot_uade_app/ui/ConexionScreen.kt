@@ -13,7 +13,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.tpo_bot_uade_app.R
 import com.example.tpo_bot_uade_app.ui.componentes.PanelEstado
 
 // Pantalla 1: IP del backend + nombre del equipo.
@@ -30,12 +32,12 @@ fun ConexionScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Control del robot", style = MaterialTheme.typography.headlineMedium)
+        Text(stringResource(R.string.conexion_titulo), style = MaterialTheme.typography.headlineMedium)
 
         OutlinedTextField(
             value = uiState.ip,
             onValueChange = onCambiarIp,
-            label = { Text("IP:puerto del backend") },
+            label = { Text(stringResource(R.string.campo_ip)) },
             singleLine = true,
             enabled = !uiState.cargando,
             modifier = Modifier.fillMaxWidth()
@@ -43,7 +45,7 @@ fun ConexionScreen(
         OutlinedTextField(
             value = uiState.equipo,
             onValueChange = onCambiarEquipo,
-            label = { Text("Nombre del equipo") },
+            label = { Text(stringResource(R.string.campo_equipo)) },
             singleLine = true,
             enabled = !uiState.cargando,
             modifier = Modifier.fillMaxWidth()
@@ -53,7 +55,7 @@ fun ConexionScreen(
             onClick = onConectar,
             enabled = uiState.equipo.isNotBlank() && !uiState.cargando,
             modifier = Modifier.fillMaxWidth()
-        ) { Text("Conectar") }
+        ) { Text(stringResource(R.string.boton_conectar)) }
 
         if (uiState.cargando) CircularProgressIndicator()
 

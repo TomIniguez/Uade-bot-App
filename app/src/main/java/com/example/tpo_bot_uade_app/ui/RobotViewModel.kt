@@ -1,7 +1,9 @@
 package com.example.tpo_bot_uade_app.ui
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.tpo_bot_uade_app.R
 import com.example.tpo_bot_uade_app.data.Resultado
 import com.example.tpo_bot_uade_app.data.RobotRepository
 import com.example.tpo_bot_uade_app.data.crearApi
@@ -17,7 +19,10 @@ import kotlinx.coroutines.launch
 // Guarda el estado de la app y sobrevive a la rotación de pantalla.
 private const val MAX_FALLOS_DE_RED = 3
 
-class RobotViewModel : ViewModel() {
+class RobotViewModel(application: Application) : AndroidViewModel(application) {
+
+    // Atajo para leer textos de strings.xml desde el ViewModel.
+    private fun texto(id: Int) = getApplication<Application>().getString(id)
 
     private val _uiState = MutableStateFlow(UiState())
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
@@ -36,9 +41,9 @@ class RobotViewModel : ViewModel() {
         viewModelScope.launch {
             _uiState.update { it.copy(cargando = true, mensaje = null) }
             val nuevoRepo = try {
-                RobotRepository(crearApi(estado.ip))
+                RobotRepository(crearApi(estado.ip), getApplication())
             } catch (e: IllegalArgumentException) {
-                _uiState.update { it.copy(cargando = false, mensaje = "La IP no es válida.", mensajeEsError = true) }
+                _uiState.update { it.copy(cargando = false, mensaje = texto(R.string.error_ip), mensajeEsError = true) }
                 return@launch
             }
 
@@ -87,7 +92,7 @@ class RobotViewModel : ViewModel() {
                         // codigo == null: no hubo respuesta. Con 3 seguidos cortamos el loop.
                         if (r.codigo == null) fallosDeRed++ else fallosDeRed = 0
                         if (fallosDeRed >= MAX_FALLOS_DE_RED) {
-                            _uiState.update { it.copy(mensaje = "Se perdió la conexión.", mensajeEsError = true) }
+                            _uiState.update { it.copy(mensaje = texto(R.string.error_perdio_conexion), mensajeEsError = true) }
                             trabajoMover = null
                             return@launch
                         }
@@ -116,7 +121,7 @@ class RobotViewModel : ViewModel() {
         viewModelScope.launch {
             when (val r = repoActual.accion(nombre)) {
                 is Resultado.Ok -> _uiState.update {
-                    it.copy(mensaje = r.datos.mensaje ?: "Acción ejecutada", mensajeEsError = false)
+                    it.copy(mensaje = r.datos.mensaje ?: texto(R.string.aviso_accion_ok), mensajeEsError = false)
                 }
                 is Resultado.Error -> {
                     if (r.codigo == 401) sesionVencida()
@@ -149,7 +154,7 @@ class RobotViewModel : ViewModel() {
     private fun repoDeLectura(ip: String): RobotRepository? {
         if (ip != ipLectura) {
             repoLectura = try {
-                RobotRepository(crearApi(ip))
+                RobotRepository(crearApi(ip), getApplication())
             } catch (e: IllegalArgumentException) {
                 null
             }
@@ -175,7 +180,7 @@ class RobotViewModel : ViewModel() {
         repo?.olvidarToken()
         repo = null
         _uiState.update {
-            it.copy(conectado = false, acciones = emptyList(), estado = null, mensaje = "La sesión venció. Volvé a conectarte.")
+            it.copy(conectado = false, acciones = emptyList(), estado = null, mensaje = texto(R.string.error_sesion_vencida))
         }
     }
 

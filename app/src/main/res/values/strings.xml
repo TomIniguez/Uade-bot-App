@@ -1,3 +1,45 @@
 <resources>
     <string name="app_name">TPO_Bot_UADE_App</string>
+
+    <!-- Pantalla de conexión -->
+    <string name="conexion_titulo">Control del robot</string>
+    <string name="campo_ip">IP:puerto del backend</string>
+    <string name="campo_equipo">Nombre del equipo</string>
+    <string name="boton_conectar">Conectar</string>
+
+    <!-- Pantalla de control -->
+    <string name="equipo_actual">Equipo: %1$s</string>
+    <string name="boton_desconectar">Desconectar</string>
+    <string name="boton_parar">■ PARAR</string>
+    <string name="mover_curva_izq">↖ Curva izq</string>
+    <string name="mover_adelante">▲ Adelante</string>
+    <string name="mover_curva_der">Curva der ↗</string>
+    <string name="mover_costado_izq">◀ Costado</string>
+    <string name="mover_costado_der">Costado ▶</string>
+    <string name="mover_girar_izq">⟲ Girar izq</string>
+    <string name="mover_atras">▼ Atrás</string>
+    <string name="mover_girar_der">Girar der ⟳</string>
+
+    <!-- Panel de estado -->
+    <string name="estado_sin_datos">Estado: sin datos del backend</string>
+    <string name="estado_robot">Robot: %1$s (%2$s)</string>
+    <string name="estado_desconocido">?</string>
+    <string name="estado_robot_conectado">Robot conectado</string>
+    <string name="estado_robot_desconectado">Robot desconectado</string>
+    <string name="estado_bateria">Batería: %1$d %%</string>
+    <string name="estado_control">Control: %1$s</string>
+    <string name="estado_control_nadie">nadie</string>
+    <string name="estado_otro_equipo">Ojo: el control lo tiene otro equipo (%1$s).</string>
+
+    <!-- Mensajes al usuario -->
+    <string name="error_sesion_vencida">La sesión venció. Volvé a conectarte.</string>
+    <string name="error_sin_conexion">No se pudo conectar. Revisá IP y WiFi.</string>
+    <string name="error_bloqueado">Acción bloqueada por seguridad.</string>
+    <string name="error_ocupado">El robot está ocupado por otro equipo.</string>
+    <string name="error_pedido">Error interno: pedido mal armado.</string>
+    <string name="error_robot">El robot no pudo ejecutar la orden.</string>
+    <string name="error_http">Error inesperado (HTTP %1$d).</string>
+    <string name="error_ip">La IP no es válida.</string>
+    <string name="error_perdio_conexion">Se perdió la conexión.</string>
+    <string name="aviso_accion_ok">Acción ejecutada</string>
 </resources>
