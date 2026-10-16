@@ -31,6 +31,8 @@ class MainActivity : ComponentActivity() {
                         ControlScreen(
                             uiState = uiState,
                             onDesconectar = viewModel::desconectar,
+                            onEmpezarMover = viewModel::empezarMover,
+                            onSoltar = viewModel::soltar,
                             modifier = Modifier.padding(innerPadding)
                         )
                     } else {
