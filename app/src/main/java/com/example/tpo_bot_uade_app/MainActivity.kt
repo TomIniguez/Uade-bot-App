@@ -19,6 +19,7 @@ import com.example.tpo_bot_uade_app.ui.theme.TPO_Bot_UADE_AppTheme
 
 // Sólo arranca la UI: elige la pantalla según si hay sesión.
 class MainActivity : ComponentActivity() {
+    // Se ejecuta al abrir la app: arma la UI y elige la pantalla según haya sesión o no.
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()

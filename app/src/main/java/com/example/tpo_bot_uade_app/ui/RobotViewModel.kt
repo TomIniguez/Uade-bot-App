@@ -21,7 +21,7 @@ private const val MAX_FALLOS_DE_RED = 3
 
 class RobotViewModel(application: Application) : AndroidViewModel(application) {
 
-    // Atajo para leer textos de strings.xml desde el ViewModel.
+    // Lee un texto de strings.xml (el ViewModel no tiene stringResource).
     private fun texto(id: Int) = getApplication<Application>().getString(id)
 
     private val _uiState = MutableStateFlow(UiState())
@@ -30,10 +30,13 @@ class RobotViewModel(application: Application) : AndroidViewModel(application) {
     // Se crea al conectar, porque depende de la IP que escribió el usuario.
     private var repo: RobotRepository? = null
 
+    // Guarda en el estado lo que el usuario escribe en el campo de IP.
     fun cambiarIp(ip: String) = _uiState.update { it.copy(ip = ip) }
 
+    // Guarda en el estado lo que el usuario escribe en el campo de equipo.
     fun cambiarEquipo(equipo: String) = _uiState.update { it.copy(equipo = equipo) }
 
+    // Inicia sesión en el backend, guarda el token y carga la lista de acciones.
     fun conectar() {
         val estado = _uiState.value
         if (estado.cargando || estado.equipo.isBlank()) return
@@ -66,6 +69,7 @@ class RobotViewModel(application: Application) : AndroidViewModel(application) {
     // Mientras el dedo esté apretado repetimos /mover cada 200 ms (el backend frena solo a los ~0.4 s).
     private var trabajoMover: Job? = null
 
+    // Arranca el loop que envía /mover mientras el botón esté apretado.
     fun empezarMover(movimiento: Movimiento) {
         val repoActual = repo ?: return
         trabajoMover?.cancel() // un solo movimiento a la vez
@@ -137,6 +141,7 @@ class RobotViewModel(application: Application) : AndroidViewModel(application) {
     private var repoLectura: RobotRepository? = null
     private var ipLectura: String? = null
 
+    // Arranca el loop que consulta /estado cada 2 segundos.
     fun empezarPolling() {
         if (trabajoEstado?.isActive == true) return
         trabajoEstado = viewModelScope.launch {
@@ -163,11 +168,13 @@ class RobotViewModel(application: Application) : AndroidViewModel(application) {
         return repoLectura
     }
 
+    // Frena la consulta periódica de /estado.
     fun detenerPolling() {
         trabajoEstado?.cancel()
         trabajoEstado = null
     }
 
+    // Se llama al destruirse el ViewModel: cancela los loops que sigan activos.
     override fun onCleared() {
         trabajoMover?.cancel()
         trabajoEstado?.cancel()
@@ -184,6 +191,7 @@ class RobotViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    // Frena el robot, cierra la sesión en el backend y vuelve a la pantalla de conexión.
     fun desconectar() {
         trabajoMover?.cancel()
         trabajoMover = null

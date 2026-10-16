@@ -20,16 +20,20 @@ class RobotRepository(private val api: RobotApi, private val contexto: Context) 
     var token: String? = null
         private set
 
+    // GET /estado: batería, conexión del robot y quién tiene el control (no pide token).
     suspend fun estado() = llamar { api.estado() }
 
+    // GET /acciones: lista de acciones disponibles según el robot (no pide token).
     suspend fun acciones() = llamar { api.acciones() }
 
+    // POST /sesion/iniciar: pide el control del robot y guarda el token que devuelve.
     suspend fun iniciarSesion(equipo: String): Resultado<IniciarSesionResponse> {
         val r = llamar { api.iniciarSesion(IniciarSesionRequest(equipo)) }
         if (r is Resultado.Ok) token = r.datos.token
         return r
     }
 
+    // POST /sesion/finalizar: libera el control del robot y borra el token.
     suspend fun finalizarSesion(): Resultado<RespuestaSimple> {
         val t = token ?: return sinSesion()
         val r = llamar { api.finalizarSesion(t, FinalizarSesionRequest(t)) }
@@ -37,16 +41,19 @@ class RobotRepository(private val api: RobotApi, private val contexto: Context) 
         return r
     }
 
+    // POST /mover: una orden de velocidad (dura ~0.4 s, por eso se repite mientras se mantiene apretado).
     suspend fun mover(vx: Double, vy: Double, vyaw: Double): Resultado<MoverResponse> {
         val t = token ?: return sinSesion()
         return llamar { api.mover(t, MoverRequest(vx, vy, vyaw)) }
     }
 
+    // POST /parar: frena el robot.
     suspend fun parar(): Resultado<RespuestaSimple> {
         val t = token ?: return sinSesion()
         return llamar { api.parar(t) }
     }
 
+    // POST /accion/{nombre}: ejecuta una acción como saludar o dar la mano.
     suspend fun accion(nombre: String): Resultado<RespuestaSimple> {
         val t = token ?: return sinSesion()
         return llamar { api.accion(t, nombre) }
@@ -57,6 +64,7 @@ class RobotRepository(private val api: RobotApi, private val contexto: Context) 
         token = null
     }
 
+    // Error que devolvemos sin llamar a la red cuando todavía no hay token.
     private fun sinSesion() = Resultado.Error(401, contexto.getString(R.string.error_sesion_vencida))
 
     // Envuelve cada request: convierte excepciones y códigos de error en Resultado.Error.
@@ -91,6 +99,7 @@ class RobotRepository(private val api: RobotApi, private val contexto: Context) 
         }
     }
 
+    // Convierte el código HTTP de error en un mensaje en español para el usuario.
     private fun mensajeParaCodigo(codigo: Int, detalle: String?): String = when (codigo) {
         401 -> contexto.getString(R.string.error_sesion_vencida)
         403 -> detalle ?: contexto.getString(R.string.error_bloqueado)
