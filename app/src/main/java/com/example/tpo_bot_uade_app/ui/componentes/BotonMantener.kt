@@ -42,9 +42,13 @@ fun BotonMantener(
                     apretado = true
                     onApretar()
                     // Espera hasta que el dedo se suelta (o el gesto se cancela).
-                    tryAwaitRelease()
-                    apretado = false
-                    onSoltar()
+                    // El finally garantiza que siempre se avise, aunque el botón se deshabilite a mitad.
+                    try {
+                        tryAwaitRelease()
+                    } finally {
+                        apretado = false
+                        onSoltar()
+                    }
                 })
             },
         contentAlignment = Alignment.Center

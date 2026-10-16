@@ -15,6 +15,8 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 // Guarda el estado de la app y sobrevive a la rotación de pantalla.
+private const val MAX_FALLOS_DE_RED = 3
+
 class RobotViewModel : ViewModel() {
 
     private val _uiState = MutableStateFlow(UiState())
@@ -63,9 +65,11 @@ class RobotViewModel : ViewModel() {
         val repoActual = repo ?: return
         trabajoMover?.cancel() // un solo movimiento a la vez
         trabajoMover = viewModelScope.launch {
+            var fallosDeRed = 0
             while (isActive) {
                 when (val r = repoActual.mover(movimiento.vx, movimiento.vy, movimiento.vyaw)) {
                     is Resultado.Ok -> {
+                        fallosDeRed = 0
                         val recortado = r.datos.recortado == true
                         _uiState.update {
                             it.copy(
@@ -76,8 +80,18 @@ class RobotViewModel : ViewModel() {
                         }
                     }
                     is Resultado.Error -> {
-                        if (r.codigo == 401) sesionVencida()
-                        else _uiState.update { it.copy(mensaje = r.mensaje, mensajeEsError = true) }
+                        if (r.codigo == 401) {
+                            sesionVencida()
+                            return@launch
+                        }
+                        // codigo == null: no hubo respuesta. Con 3 seguidos cortamos el loop.
+                        if (r.codigo == null) fallosDeRed++ else fallosDeRed = 0
+                        if (fallosDeRed >= MAX_FALLOS_DE_RED) {
+                            _uiState.update { it.copy(mensaje = "Se perdió la conexión.", mensajeEsError = true) }
+                            trabajoMover = null
+                            return@launch
+                        }
+                        _uiState.update { it.copy(mensaje = r.mensaje, mensajeEsError = true) }
                     }
                 }
                 delay(200)
@@ -90,7 +104,10 @@ class RobotViewModel : ViewModel() {
         trabajoMover?.cancel()
         trabajoMover = null
         val repoActual = repo ?: return
-        viewModelScope.launch { repoActual.parar() }
+        viewModelScope.launch {
+            val r = repoActual.parar()
+            if (r is Resultado.Error && r.codigo == 401) sesionVencida()
+        }
     }
 
     // Ejecuta una acción del robot (saludo, dar_la_mano...). Un 403 se muestra tal cual.
