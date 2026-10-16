@@ -1,6 +1,8 @@
 package com.example.tpo_bot_uade_app.data
 
+import android.content.Context
 import android.util.Log
+import com.example.tpo_bot_uade_app.R
 import com.google.gson.JsonParser
 import retrofit2.Response
 import java.io.IOException
@@ -13,7 +15,7 @@ sealed class Resultado<out T> {
 }
 
 // Es el único que habla con la API. Guarda el token de la sesión en memoria.
-class RobotRepository(private val api: RobotApi) {
+class RobotRepository(private val api: RobotApi, private val contexto: Context) {
 
     var token: String? = null
         private set
@@ -55,7 +57,7 @@ class RobotRepository(private val api: RobotApi) {
         token = null
     }
 
-    private fun sinSesion() = Resultado.Error(401, "La sesión venció. Volvé a conectarte.")
+    private fun sinSesion() = Resultado.Error(401, contexto.getString(R.string.error_sesion_vencida))
 
     // Envuelve cada request: convierte excepciones y códigos de error en Resultado.Error.
     private suspend fun <T> llamar(bloque: suspend () -> Response<T>): Resultado<T> {
@@ -70,7 +72,7 @@ class RobotRepository(private val api: RobotApi) {
             }
         } catch (e: IOException) {
             Log.w("RobotRepository", "Sin respuesta del backend", e)
-            Resultado.Error(null, "No se pudo conectar. Revisá IP y WiFi.")
+            Resultado.Error(null, contexto.getString(R.string.error_sin_conexion))
         }
     }
 
@@ -90,14 +92,14 @@ class RobotRepository(private val api: RobotApi) {
     }
 
     private fun mensajeParaCodigo(codigo: Int, detalle: String?): String = when (codigo) {
-        401 -> "La sesión venció. Volvé a conectarte."
-        403 -> detalle ?: "Acción bloqueada por seguridad."
-        409 -> detalle ?: "El robot está ocupado por otro equipo."
+        401 -> contexto.getString(R.string.error_sesion_vencida)
+        403 -> detalle ?: contexto.getString(R.string.error_bloqueado)
+        409 -> detalle ?: contexto.getString(R.string.error_ocupado)
         422 -> {
             Log.e("RobotRepository", "422 (body mal armado): $detalle")
-            "Error interno: pedido mal armado."
+            contexto.getString(R.string.error_pedido)
         }
-        503 -> "El robot no pudo ejecutar la orden."
-        else -> detalle ?: "Error inesperado (HTTP $codigo)."
+        503 -> contexto.getString(R.string.error_robot)
+        else -> detalle ?: contexto.getString(R.string.error_http, codigo)
     }
 }
