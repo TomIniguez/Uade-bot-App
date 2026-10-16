@@ -17,6 +17,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import com.example.tpo_bot_uade_app.ui.componentes.BotonMantener
 import com.example.tpo_bot_uade_app.ui.componentes.PanelEstado
 
@@ -31,6 +33,9 @@ fun ControlScreen(
     modifier: Modifier = Modifier
 ) {
     val habilitado = !uiState.cargando
+
+    // "Hombre muerto": si la app pasa a segundo plano (llamada, botón Home), el robot frena.
+    LifecycleEventEffect(Lifecycle.Event.ON_STOP) { onSoltar() }
 
     // Cada botón de movimiento ocupa una celda de la grilla.
     @Composable
@@ -81,7 +86,7 @@ fun ControlScreen(
                 // PARAR es un botón normal: con un toque basta.
                 Button(
                     onClick = onSoltar,
-                    enabled = habilitado,
+                    // PARAR queda siempre habilitado: es el botón de seguridad.
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
                     modifier = Modifier.weight(1f).fillMaxSize()
                 ) { Text("■ PARAR", style = MaterialTheme.typography.titleLarge) }
