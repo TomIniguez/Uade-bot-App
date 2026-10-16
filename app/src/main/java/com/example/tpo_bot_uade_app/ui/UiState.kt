@@ -12,5 +12,6 @@ data class UiState(
     val estado: EstadoResponse? = null,
     val acciones: List<Accion> = emptyList(),
     val mensaje: String? = null,         // aviso o error para el usuario
+    val mensajeEsError: Boolean = true,  // false = aviso neutro (recorte, acción OK)
     val ultimoRecorte: Boolean = false
 )

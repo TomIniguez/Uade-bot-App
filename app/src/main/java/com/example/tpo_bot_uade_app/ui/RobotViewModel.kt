@@ -33,7 +33,12 @@ class RobotViewModel : ViewModel() {
 
         viewModelScope.launch {
             _uiState.update { it.copy(cargando = true, mensaje = null) }
-            val nuevoRepo = RobotRepository(crearApi(estado.ip))
+            val nuevoRepo = try {
+                RobotRepository(crearApi(estado.ip))
+            } catch (e: IllegalArgumentException) {
+                _uiState.update { it.copy(cargando = false, mensaje = "La IP no es válida.", mensajeEsError = true) }
+                return@launch
+            }
 
             when (val sesion = nuevoRepo.iniciarSesion(estado.equipo.trim())) {
                 is Resultado.Error -> {
@@ -63,11 +68,16 @@ class RobotViewModel : ViewModel() {
                     is Resultado.Ok -> {
                         val recortado = r.datos.recortado == true
                         _uiState.update {
-                            it.copy(ultimoRecorte = recortado, mensaje = if (recortado) r.datos.mensaje else null)
+                            it.copy(
+                                ultimoRecorte = recortado,
+                                mensaje = if (recortado) r.datos.mensaje else null,
+                                mensajeEsError = false // el recorte es un aviso, no un error
+                            )
                         }
                     }
                     is Resultado.Error -> {
-                        if (r.codigo == 401) sesionVencida() else _uiState.update { it.copy(mensaje = r.mensaje) }
+                        if (r.codigo == 401) sesionVencida()
+                        else _uiState.update { it.copy(mensaje = r.mensaje, mensajeEsError = true) }
                     }
                 }
                 delay(200)
@@ -81,6 +91,64 @@ class RobotViewModel : ViewModel() {
         trabajoMover = null
         val repoActual = repo ?: return
         viewModelScope.launch { repoActual.parar() }
+    }
+
+    // Ejecuta una acción del robot (saludo, dar_la_mano...). Un 403 se muestra tal cual.
+    fun hacerAccion(nombre: String) {
+        val repoActual = repo ?: return
+        viewModelScope.launch {
+            when (val r = repoActual.accion(nombre)) {
+                is Resultado.Ok -> _uiState.update {
+                    it.copy(mensaje = r.datos.mensaje ?: "Acción ejecutada", mensajeEsError = false)
+                }
+                is Resultado.Error -> {
+                    if (r.codigo == 401) sesionVencida()
+                    else _uiState.update { it.copy(mensaje = r.mensaje, mensajeEsError = true) }
+                }
+            }
+        }
+    }
+
+    // Polling de /estado cada 2 s. Funciona con o sin sesión (/estado no pide token),
+    // así también se ve si el robot está libre antes de conectar.
+    private var trabajoEstado: Job? = null
+    private var repoLectura: RobotRepository? = null
+    private var ipLectura: String? = null
+
+    fun empezarPolling() {
+        if (trabajoEstado?.isActive == true) return
+        trabajoEstado = viewModelScope.launch {
+            while (isActive) {
+                val lector = repo ?: repoDeLectura(_uiState.value.ip)
+                val r = lector?.estado()
+                _uiState.update { it.copy(estado = (r as? Resultado.Ok)?.datos) }
+                delay(2000)
+            }
+        }
+    }
+
+    // Sin sesión usamos un repositorio sólo de lectura, que se recrea si cambia la IP.
+    // Devuelve null si la IP escrita todavía no es una URL válida.
+    private fun repoDeLectura(ip: String): RobotRepository? {
+        if (ip != ipLectura) {
+            repoLectura = try {
+                RobotRepository(crearApi(ip))
+            } catch (e: IllegalArgumentException) {
+                null
+            }
+            ipLectura = ip
+        }
+        return repoLectura
+    }
+
+    fun detenerPolling() {
+        trabajoEstado?.cancel()
+        trabajoEstado = null
+    }
+
+    override fun onCleared() {
+        trabajoMover?.cancel()
+        trabajoEstado?.cancel()
     }
 
     // El token ya no sirve: volvemos a la pantalla de conexión.

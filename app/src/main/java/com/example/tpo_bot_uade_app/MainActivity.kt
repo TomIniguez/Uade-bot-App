@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.tpo_bot_uade_app.ui.ConexionScreen
@@ -26,6 +27,12 @@ class MainActivity : ComponentActivity() {
                 val viewModel: RobotViewModel = viewModel()
                 val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+                // El polling de /estado sólo corre con la app visible.
+                LifecycleStartEffect(Unit) {
+                    viewModel.empezarPolling()
+                    onStopOrDispose { viewModel.detenerPolling() }
+                }
+
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     if (uiState.conectado) {
                         ControlScreen(
@@ -33,6 +40,7 @@ class MainActivity : ComponentActivity() {
                             onDesconectar = viewModel::desconectar,
                             onEmpezarMover = viewModel::empezarMover,
                             onSoltar = viewModel::soltar,
+                            onAccion = viewModel::hacerAccion,
                             modifier = Modifier.padding(innerPadding)
                         )
                     } else {

@@ -1,5 +1,6 @@
 package com.example.tpo_bot_uade_app.ui
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -16,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.tpo_bot_uade_app.ui.componentes.BotonMantener
+import com.example.tpo_bot_uade_app.ui.componentes.PanelEstado
 
 // Pantalla 2: el control remoto. Cruceta 3x3 con los 8 movimientos y PARAR al centro.
 @Composable
@@ -24,6 +27,7 @@ fun ControlScreen(
     onDesconectar: () -> Unit,
     onEmpezarMover: (Movimiento) -> Unit,
     onSoltar: () -> Unit,
+    onAccion: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val habilitado = !uiState.cargando
@@ -53,7 +57,15 @@ fun ControlScreen(
             Button(onClick = onDesconectar, enabled = habilitado) { Text("Desconectar") }
         }
 
-        uiState.mensaje?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+        PanelEstado(estado = uiState.estado, miEquipo = uiState.equipo)
+
+        uiState.mensaje?.let {
+            Text(
+                it,
+                color = if (uiState.mensajeEsError) MaterialTheme.colorScheme.error
+                else MaterialTheme.colorScheme.tertiary
+            )
+        }
 
         Column(
             modifier = Modifier.weight(1f).fillMaxWidth(),
@@ -79,6 +91,18 @@ fun ControlScreen(
                 Mover("⟲ Girar izq", Velocidades.GIRAR_IZQUIERDA)
                 Mover("▼ Atrás", Velocidades.ATRAS)
                 Mover("Girar der ⟳", Velocidades.GIRAR_DERECHA)
+            }
+        }
+
+        // Un botón por cada acción que informa el backend (el G1 trae más que el Go2).
+        Row(
+            modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            uiState.acciones.forEach { accion ->
+                Button(onClick = { onAccion(accion.nombre) }, enabled = habilitado) {
+                    Text(accion.descripcion ?: accion.nombre)
+                }
             }
         }
     }
