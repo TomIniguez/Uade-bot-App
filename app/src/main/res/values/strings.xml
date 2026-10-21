@@ -11,14 +11,6 @@
     <string name="equipo_actual">Equipo: %1$s</string>
     <string name="boton_desconectar">Desconectar</string>
     <string name="boton_parar">■ PARAR</string>
-    <string name="mover_curva_izq">↖ Curva izq</string>
-    <string name="mover_adelante">▲ Adelante</string>
-    <string name="mover_curva_der">Curva der ↗</string>
-    <string name="mover_costado_izq">◀ Costado</string>
-    <string name="mover_costado_der">Costado ▶</string>
-    <string name="mover_girar_izq">⟲ Girar izq</string>
-    <string name="mover_atras">▼ Atrás</string>
-    <string name="mover_girar_der">Girar der ⟳</string>
 
     <!-- Panel de estado -->
     <string name="estado_sin_datos">Estado: sin datos del backend</string>

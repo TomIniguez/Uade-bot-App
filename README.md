@@ -6,7 +6,7 @@ La app se desarrolla contra el simulador de la cátedra y, el día de la visita,
 
 ## Funcionalidades
 - Conexión al backend (`http://<IP>:8000`) e inicio de sesión con el nombre del equipo
-- Movimiento del robot con botones de "mantener apretado": adelante, atrás, giro sobre su eje, costado y curvas (mientras el botón está apretado se repite `/mover` cada 200 ms)
+- Movimiento del robot con un joystick: adelante, atrás y giro sobre su eje (combinados dan curvas); no hay movimiento lateral porque el robot es bípedo. Mientras el dedo está en el joystick se repite `/mover` cada 200 ms
 - Botón de parar, y parada automática cuando la app pasa a segundo plano
 - Acciones cargadas dinámicamente desde el backend (saludar y, en el G1, dar la mano)
 - Panel de estado: batería, conexión del robot, tipo de robot y equipo que tiene el control (se actualiza cada 2 s)

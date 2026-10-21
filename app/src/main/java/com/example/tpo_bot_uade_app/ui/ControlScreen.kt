@@ -4,9 +4,10 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Button
@@ -21,15 +22,15 @@ import androidx.compose.ui.unit.dp
 import com.example.tpo_bot_uade_app.R
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
-import com.example.tpo_bot_uade_app.ui.componentes.BotonMantener
+import com.example.tpo_bot_uade_app.ui.componentes.Joystick
 import com.example.tpo_bot_uade_app.ui.componentes.PanelEstado
 
-// Pantalla 2: el control remoto. Cruceta 3x3 con los 8 movimientos y PARAR al centro.
+// Pantalla 2: el control remoto. Joystick (adelante/atrás + girar) y botón PARAR.
 @Composable
 fun ControlScreen(
     uiState: UiState,
     onDesconectar: () -> Unit,
-    onEmpezarMover: (Movimiento) -> Unit,
+    onMover: (Movimiento) -> Unit,
     onSoltar: () -> Unit,
     onAccion: (String) -> Unit,
     modifier: Modifier = Modifier
@@ -38,18 +39,6 @@ fun ControlScreen(
 
     // "Hombre muerto": si la app pasa a segundo plano (llamada, botón Home), el robot frena.
     LifecycleEventEffect(Lifecycle.Event.ON_STOP) { onSoltar() }
-
-    // Cada botón de movimiento ocupa una celda de la grilla.
-    @Composable
-    fun RowScope.Mover(texto: String, movimiento: Movimiento) {
-        BotonMantener(
-            texto = texto,
-            onApretar = { onEmpezarMover(movimiento) },
-            onSoltar = onSoltar,
-            habilitado = habilitado,
-            modifier = Modifier.weight(1f).fillMaxSize()
-        )
-    }
 
     Column(
         modifier = modifier.fillMaxSize().padding(16.dp),
@@ -76,29 +65,24 @@ fun ControlScreen(
 
         Column(
             modifier = Modifier.weight(1f).fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Row(Modifier.weight(1f).fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Mover(stringResource(R.string.mover_curva_izq), Velocidades.CURVA_IZQUIERDA)
-                Mover(stringResource(R.string.mover_adelante), Velocidades.ADELANTE)
-                Mover(stringResource(R.string.mover_curva_der), Velocidades.CURVA_DERECHA)
+            Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
+                Joystick(
+                    onMover = onMover,
+                    onSoltar = onSoltar,
+                    habilitado = habilitado,
+                    modifier = Modifier.fillMaxSize()
+                )
             }
-            Row(Modifier.weight(1f).fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Mover(stringResource(R.string.mover_costado_izq), Velocidades.COSTADO_IZQUIERDA)
-                // PARAR es un botón normal: con un toque basta.
-                Button(
-                    onClick = onSoltar,
-                    // PARAR queda siempre habilitado: es el botón de seguridad.
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
-                    modifier = Modifier.weight(1f).fillMaxSize()
-                ) { Text(stringResource(R.string.boton_parar), style = MaterialTheme.typography.titleLarge) }
-                Mover(stringResource(R.string.mover_costado_der), Velocidades.COSTADO_DERECHA)
-            }
-            Row(Modifier.weight(1f).fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Mover(stringResource(R.string.mover_girar_izq), Velocidades.GIRAR_IZQUIERDA)
-                Mover(stringResource(R.string.mover_atras), Velocidades.ATRAS)
-                Mover(stringResource(R.string.mover_girar_der), Velocidades.GIRAR_DERECHA)
-            }
+            // PARAR es un botón normal: con un toque basta.
+            Button(
+                onClick = onSoltar,
+                // PARAR queda siempre habilitado: es el botón de seguridad.
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
+                modifier = Modifier.fillMaxWidth().height(64.dp)
+            ) { Text(stringResource(R.string.boton_parar), style = MaterialTheme.typography.titleLarge) }
         }
 
         // Un botón por cada acción que informa el backend (el G1 trae más que el Go2).

@@ -69,14 +69,20 @@ class RobotViewModel(application: Application) : AndroidViewModel(application) {
     // Mientras el dedo esté apretado repetimos /mover cada 200 ms (el backend frena solo a los ~0.4 s).
     private var trabajoMover: Job? = null
 
-    // Arranca el loop que envía /mover mientras el botón esté apretado.
-    fun empezarMover(movimiento: Movimiento) {
+    // Lo que el joystick pide ahora; el loop lo lee en cada vuelta.
+    private var movimientoActual = Movimiento(0.0, 0.0, 0.0)
+
+    // El joystick llama a esto cada vez que mueve la palanca. Si el loop de /mover ya corre,
+    // sólo actualiza la velocidad; si no, lo arranca.
+    fun mover(movimiento: Movimiento) {
         val repoActual = repo ?: return
-        trabajoMover?.cancel() // un solo movimiento a la vez
+        movimientoActual = movimiento
+        if (trabajoMover?.isActive == true) return
         trabajoMover = viewModelScope.launch {
             var fallosDeRed = 0
             while (isActive) {
-                when (val r = repoActual.mover(movimiento.vx, movimiento.vy, movimiento.vyaw)) {
+                val m = movimientoActual
+                when (val r = repoActual.mover(m.vx, m.vy, m.vyaw)) {
                     is Resultado.Ok -> {
                         fallosDeRed = 0
                         val recortado = r.datos.recortado == true
