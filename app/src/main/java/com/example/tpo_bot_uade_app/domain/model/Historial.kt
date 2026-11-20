@@ -7,6 +7,8 @@ sealed class EventoRobot {
     data class AlertaEmitida(val alerta: Alerta) : EventoRobot()
     data object ConexionPerdida : EventoRobot()
     data object ConexionRecuperada : EventoRobot()
+    // Una orden termino (confirmada, rechazada o sin respuesta). Sirve para dejar traza en el historial.
+    data class ComandoResuelto(val comando: Comando, val respuesta: RespuestaComando) : EventoRobot()
 }
 
 // Una mision terminada, tal como queda en el historial.

@@ -8,13 +8,17 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.tpo_bot_uade_app.ui.historial.HistorialViewModel
 import com.example.tpo_bot_uade_app.ui.navegacion.AppNavegacion
 import com.example.tpo_bot_uade_app.ui.pruebas.SimulacionViewModel
 import com.example.tpo_bot_uade_app.ui.robot.RobotViewModel
 import com.example.tpo_bot_uade_app.ui.theme.TPO_Bot_UADE_AppTheme
 
-// Solo arranca la UI: crea el ViewModel y le pasa el estado a la navegacion.
+// Solo arranca la UI: crea los ViewModels y le pasa su estado a la navegacion.
 class MainActivity : ComponentActivity() {
+
+    private val container by lazy { (application as RobotApp).container }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Iconos claros en la barra de estado (el fondo de la app es oscuro).
@@ -22,17 +26,30 @@ class MainActivity : ComponentActivity() {
             statusBarStyle = SystemBarStyle.dark(android.graphics.Color.TRANSPARENT),
             navigationBarStyle = SystemBarStyle.dark(android.graphics.Color.TRANSPARENT)
         )
-        val container = (application as RobotApp).container
         setContent {
             TPO_Bot_UADE_AppTheme {
-                // Un solo RobotViewModel para toda la Activity (se comparte entre pantallas).
-                val viewModel: RobotViewModel = viewModel(factory = container.viewModelFactory)
-                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-                // ViewModel del panel de pruebas: tambien de la Activity, asi no pierde la velocidad elegida.
+                // Los tres ViewModels son de la Activity (se comparten entre pantallas).
+                val robotVm: RobotViewModel = viewModel(factory = container.viewModelFactory)
                 val simulacionVm: SimulacionViewModel = viewModel(factory = container.viewModelFactory)
+                val historialVm: HistorialViewModel = viewModel(factory = container.viewModelFactory)
+
+                val uiState by robotVm.uiState.collectAsStateWithLifecycle()
                 val simulacion by simulacionVm.uiState.collectAsStateWithLifecycle()
-                AppNavegacion(uiState, viewModel::onEvento, simulacion, simulacionVm::onEvento)
+                val historial by historialVm.uiState.collectAsStateWithLifecycle()
+
+                AppNavegacion(
+                    uiState, robotVm::onEvento,
+                    simulacion, simulacionVm::onEvento,
+                    historial, historialVm::onEvento
+                )
             }
         }
+    }
+
+    // Riesgo R3: si la app pasa a segundo plano con una mision activa, queda en el historial.
+    // (El robot simulado sigue trabajando; la app simplemente deja de mirarlo.)
+    override fun onStop() {
+        super.onStop()
+        if (!isChangingConfigurations) container.registrador.appEnSegundoPlano()
     }
 }

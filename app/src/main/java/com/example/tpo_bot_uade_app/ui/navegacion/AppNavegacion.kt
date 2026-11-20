@@ -27,6 +27,9 @@ import com.example.tpo_bot_uade_app.ui.componentes.Destino
 import com.example.tpo_bot_uade_app.ui.componentes.DialogoConfirmacion
 import com.example.tpo_bot_uade_app.ui.alertas.AlertasScreen
 import com.example.tpo_bot_uade_app.ui.componentes.DialogoIncidente
+import com.example.tpo_bot_uade_app.ui.historial.EventoHistorial
+import com.example.tpo_bot_uade_app.ui.historial.HistorialScreen
+import com.example.tpo_bot_uade_app.ui.historial.HistorialUiState
 import com.example.tpo_bot_uade_app.ui.misiones.MisionesScreen
 import com.example.tpo_bot_uade_app.ui.pruebas.EventoPrueba
 import com.example.tpo_bot_uade_app.ui.pruebas.PanelPruebasScreen
@@ -50,7 +53,9 @@ fun AppNavegacion(
     uiState: RobotUiState,
     onEvento: (EventoUi) -> Unit,
     simulacion: SimulacionUiState,
-    onEventoPrueba: (EventoPrueba) -> Unit
+    onEventoPrueba: (EventoPrueba) -> Unit,
+    historial: HistorialUiState,
+    onEventoHistorial: (EventoHistorial) -> Unit
 ) {
     val robot = uiState.robotConectado
     if (robot == null) {
@@ -113,6 +118,7 @@ fun AppNavegacion(
             composable(Destino.SUPERVISION.ruta) { SupervisionScreen(uiState, onEvento) }
             composable(Destino.MISIONES.ruta) { MisionesScreen(uiState, onEvento) }
             composable(Destino.ALERTAS.ruta) { AlertasScreen(uiState, onEvento) }
+            composable(Destino.HISTORIAL.ruta) { HistorialScreen(historial, onEventoHistorial) }
             composable(RUTA_PRUEBAS) {
                 PanelPruebasScreen(simulacion, onEventoPrueba, onVolver = { navController.popBackStack() })
             }

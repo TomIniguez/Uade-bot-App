@@ -102,7 +102,9 @@ class SimulatedRobotRepository(
             synchronized(candado) { sim.procesar(comandoId, comando) }
         }
         publicar() // la telemetria nueva confirma (o no) que la orden se ejecuto
-        return respuesta ?: RespuestaComando(comandoId, EstadoComando.SIN_RESPUESTA, null, reloj())
+        val final = respuesta ?: RespuestaComando(comandoId, EstadoComando.SIN_RESPUESTA, null, reloj())
+        _eventos.tryEmit(EventoRobot.ComandoResuelto(comando, final))
+        return final
     }
 
     // =====================================================================
