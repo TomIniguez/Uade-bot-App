@@ -5,6 +5,7 @@ import com.example.tpo_bot_uade_app.domain.model.Comando
 import com.example.tpo_bot_uade_app.domain.model.DecisionIncidente
 import com.example.tpo_bot_uade_app.domain.model.EstadoComando
 import com.example.tpo_bot_uade_app.domain.model.EstadoOperativo
+import com.example.tpo_bot_uade_app.domain.model.TipoAlerta
 import com.example.tpo_bot_uade_app.domain.model.TipoComando
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -147,5 +148,38 @@ class RobotViewModelTest {
         assertNull(vm.uiState.value.incidenteActivo)
         assertEquals(EstadoOperativo.EN_MISION, vm.uiState.value.telemetria?.estado)
         assertEquals(listOf("P1"), vm.uiState.value.telemetria?.mision?.puntosOmitidos)
+    }
+
+    // Escenario 3 completo: corte de enlace, orden sin respuesta, pausa automatica y recuperacion.
+    @Test
+    fun desconexion_pausarSinRespuesta_yAlVolverAlertas() = probar { vm ->
+        vm.onEvento(EventoUi.PedirComando(Comando.IniciarMision("M1")))
+        vm.onEvento(EventoUi.ConfirmarDialogo)
+        advanceTimeBy(1_000)
+        runCurrent()
+
+        repo.forzarDesconexion(true)
+        advanceTimeBy(4_000)
+        runCurrent()
+        assertTrue(vm.uiState.value.datosAntiguos)
+        assertTrue(vm.uiState.value.segundosDesdeActualizacion >= 4)
+
+        // Pausar se puede intentar sin conexion, pero la respuesta nunca llega.
+        vm.onEvento(EventoUi.PedirComando(Comando.PausarMision))
+        assertEquals(EstadoComando.PENDIENTE, vm.uiState.value.ultimoComando?.estado)
+        advanceTimeBy(3_100)
+        runCurrent()
+        assertEquals(EstadoComando.SIN_RESPUESTA, vm.uiState.value.ultimoComando?.estado)
+
+        advanceTimeBy(20_000) // mas de 20 ticks sin enlace: el robot se pausa solo
+        repo.forzarDesconexion(false)
+        runCurrent()
+        val estado = vm.uiState.value
+        assertFalse(estado.datosAntiguos)
+        assertTrue(estado.conexionRecuperada)
+        assertEquals(EstadoOperativo.PAUSADO, estado.telemetria?.estado)
+        val tipos = estado.alertas.map { it.tipo }
+        assertTrue(TipoAlerta.CONEXION_RECUPERADA in tipos)
+        assertTrue(TipoAlerta.PAUSA_AUTOMATICA in tipos)
     }
 }

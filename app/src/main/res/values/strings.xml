@@ -96,6 +96,14 @@
     <string name="aviso_anomalia">La próxima inspección va a medir 58 °C.</string>
     <string name="aviso_reiniciada">Simulación reiniciada.</string>
 
+    <!-- Desconexion -->
+    <string name="banner_sin_conexion">Sin conexión — datos de hace %1$d s</string>
+    <string name="banner_sin_conexion_detalle">Los valores que ves no están actualizados. Las órdenes pueden no llegar.</string>
+    <string name="banner_datos_antiguos">Datos de hace %1$d s</string>
+    <string name="banner_datos_antiguos_detalle">El robot no envía datos nuevos. Esperá antes de dar órdenes.</string>
+    <string name="banner_recuperada">Conexión recuperada</string>
+    <string name="banner_recuperada_detalle">Los datos vuelven a estar actualizados. Revisá el estado de la última orden.</string>
+
     <!-- Navegacion -->
     <string name="nav_supervision">Supervisión</string>
     <string name="nav_misiones">Misiones</string>

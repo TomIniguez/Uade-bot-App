@@ -19,6 +19,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.tpo_bot_uade_app.R
 import com.example.tpo_bot_uade_app.domain.model.Comando
 import com.example.tpo_bot_uade_app.domain.model.TipoComando
+import com.example.tpo_bot_uade_app.ui.componentes.BannerDesconexion
 import com.example.tpo_bot_uade_app.ui.componentes.BarraInferior
 import com.example.tpo_bot_uade_app.ui.componentes.BarraSuperiorRobot
 import com.example.tpo_bot_uade_app.ui.componentes.BotonDetencion
@@ -74,14 +75,23 @@ fun AppNavegacion(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            BarraSuperiorRobot(
-                nombreRobot = robot.nombre,
-                telemetria = uiState.telemetria,
-                datosAntiguos = uiState.datosAntiguos,
-                segundos = uiState.segundosDesdeActualizacion,
-                onDesconectar = { onEvento(EventoUi.Desconectar) },
-                onPruebas = { navController.navigate(RUTA_PRUEBAS) { launchSingleTop = true } }
-            )
+            Column {
+                BarraSuperiorRobot(
+                    nombreRobot = robot.nombre,
+                    telemetria = uiState.telemetria,
+                    datosAntiguos = uiState.datosAntiguos,
+                    segundos = uiState.segundosDesdeActualizacion,
+                    onDesconectar = { onEvento(EventoUi.Desconectar) },
+                    onPruebas = { navController.navigate(RUTA_PRUEBAS) { launchSingleTop = true } }
+                )
+                // Banner global: sin conexion / datos antiguos / conexion recuperada.
+                BannerDesconexion(
+                    telemetria = uiState.telemetria,
+                    datosAntiguos = uiState.datosAntiguos,
+                    segundos = uiState.segundosDesdeActualizacion,
+                    conexionRecuperada = uiState.conexionRecuperada
+                )
+            }
         },
         bottomBar = {
             Column {

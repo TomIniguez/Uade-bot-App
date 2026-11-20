@@ -79,6 +79,14 @@ object ReglasComando {
             }
         }
 
+        // Pausar tambien se permite sin conexion: es una orden "hacia lo seguro" (frena el robot).
+        // Asi lo pide el escenario 3 (y el flujo con falla del Figma): el operador toca Pausar sin
+        // enlace y ve PENDIENTE -> SIN_RESPUESTA. Se decide con el ultimo estado conocido.
+        if (tipo == TipoComando.PAUSAR_MISION) {
+            return if (t.estado == EstadoOperativo.EN_MISION) Habilitacion.SI
+            else Habilitacion.no(MotivoBloqueo.SIN_MISION_EN_CURSO)
+        }
+
         // El resto necesita conexion y datos vigentes.
         motivoDeEnlace(t, contexto.datosAntiguos)?.let { return Habilitacion.no(it) }
 
@@ -89,10 +97,6 @@ object ReglasComando {
                 hayCriticaSinReconocer(contexto.alertas) -> Habilitacion.no(MotivoBloqueo.ALERTA_CRITICA_SIN_RECONOCER)
                 else -> Habilitacion.SI
             }
-
-            TipoComando.PAUSAR_MISION ->
-                if (t.estado == EstadoOperativo.EN_MISION) Habilitacion.SI
-                else Habilitacion.no(MotivoBloqueo.SIN_MISION_EN_CURSO)
 
             TipoComando.REANUDAR_MISION -> when {
                 t.estado != EstadoOperativo.PAUSADO -> Habilitacion.no(MotivoBloqueo.MISION_NO_PAUSADA)
@@ -115,7 +119,7 @@ object ReglasComando {
                 else Habilitacion.no(MotivoBloqueo.SIN_INCIDENTE)
 
             // Ya resueltos arriba; se repiten para que el "when" cubra todos los casos.
-            TipoComando.DETENCION_OPERATIVA, TipoComando.REGRESAR_A_PUNTO_SEGURO -> Habilitacion.SI
+            TipoComando.DETENCION_OPERATIVA, TipoComando.REGRESAR_A_PUNTO_SEGURO, TipoComando.PAUSAR_MISION -> Habilitacion.SI
         }
     }
 
