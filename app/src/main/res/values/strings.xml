@@ -104,6 +104,37 @@
     <string name="banner_recuperada">Conexión recuperada</string>
     <string name="banner_recuperada_detalle">Los datos vuelven a estar actualizados. Revisá el estado de la última orden.</string>
 
+    <!-- Historial -->
+    <string name="nav_historial">Historial</string>
+    <string name="h_pestana_misiones">Misiones (%1$d)</string>
+    <string name="h_pestana_eventos">Eventos (%1$d)</string>
+    <string name="h_vacio_misiones">Todavía no hay misiones terminadas.</string>
+    <string name="h_vacio_eventos">Todavía no hay eventos registrados.</string>
+    <string name="h_borrar">Borrar historial</string>
+    <string name="h_borrar_titulo">¿Borrar todo el historial?</string>
+    <string name="h_borrar_texto">Se eliminan todas las misiones y eventos guardados en este teléfono. No se puede deshacer.</string>
+    <string name="h_item_mision">%1$s · %2$s</string>
+    <string name="h_item_mision_detalle">%1$d de %2$d puntos inspeccionados · %3$d anomalías</string>
+    <string name="h_resultado">Resultado</string>
+    <string name="h_robot">Robot</string>
+    <string name="h_inicio">Inicio</string>
+    <string name="h_fin">Fin</string>
+    <string name="h_puntos">Puntos inspeccionados</string>
+    <string name="h_bateria">Batería (inicio → fin)</string>
+    <string name="h_bateria_valor">%1$d %% → %2$d %%</string>
+    <string name="h_eventos_mision">Eventos de esta misión</string>
+    <!-- Textos que se guardan en el historial -->
+    <string name="h_mision_iniciada">Misión iniciada</string>
+    <string name="h_mision_completada">Misión completada</string>
+    <string name="h_mision_cancelada">Misión cancelada</string>
+    <string name="h_mision_abortada">Misión abortada</string>
+    <string name="h_mision_detalle">%1$s · %2$d de %3$d puntos · %4$d anomalías</string>
+    <string name="h_conexion_perdida">Conexión perdida</string>
+    <string name="h_conexion_recuperada">Conexión recuperada</string>
+    <string name="h_comando">%1$s · %2$s</string>
+    <string name="h_decision">Decisión: %1$s</string>
+    <string name="h_segundo_plano">La app pasó a segundo plano con una misión activa</string>
+
     <!-- Navegacion -->
     <string name="nav_supervision">Supervisión</string>
     <string name="nav_misiones">Misiones</string>
