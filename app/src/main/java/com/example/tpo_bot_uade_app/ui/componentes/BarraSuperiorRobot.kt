@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Logout
+import androidx.compose.material.icons.outlined.Science
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -23,7 +24,7 @@ import com.example.tpo_bot_uade_app.R
 import com.example.tpo_bot_uade_app.domain.model.Telemetria
 import com.example.tpo_bot_uade_app.ui.theme.Superficie
 
-// Nombre del robot, conexion, bateria y boton Desconectar. (El icono de Pruebas llega en la fase 5.)
+// Nombre del robot, conexion, bateria, acceso al panel de pruebas y boton Desconectar.
 @Composable
 fun BarraSuperiorRobot(
     nombreRobot: String,
@@ -31,6 +32,7 @@ fun BarraSuperiorRobot(
     datosAntiguos: Boolean,
     segundos: Int,
     onDesconectar: () -> Unit,
+    onPruebas: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -47,6 +49,9 @@ fun BarraSuperiorRobot(
                 ChipConexion(telemetria, datosAntiguos, segundos)
                 telemetria?.let { IndicadorBateria(it.bateriaPct, antiguo = datosAntiguos) }
             }
+        }
+        IconButton(onClick = onPruebas) {
+            Icon(Icons.Outlined.Science, contentDescription = stringResource(R.string.pruebas_titulo))
         }
         IconButton(onClick = onDesconectar) {
             Icon(Icons.AutoMirrored.Outlined.Logout, contentDescription = stringResource(R.string.boton_desconectar))

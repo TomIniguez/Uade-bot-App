@@ -11,6 +11,7 @@ import com.example.tpo_bot_uade_app.domain.model.Alerta
 import com.example.tpo_bot_uade_app.domain.model.Comando
 import com.example.tpo_bot_uade_app.domain.model.EstadoComando
 import com.example.tpo_bot_uade_app.domain.model.EstadoConexion
+import com.example.tpo_bot_uade_app.domain.model.EstadoOperativo
 import com.example.tpo_bot_uade_app.domain.model.RegistroComando
 import com.example.tpo_bot_uade_app.domain.model.Telemetria
 import com.example.tpo_bot_uade_app.domain.model.TipoComando
@@ -67,7 +68,7 @@ class RobotViewModel(
         when (evento) {
             is EventoUi.SeleccionarRobot -> conectar(evento.robotId)
             EventoUi.Desconectar -> _uiState.update { it.copy(dialogo = DialogoUi.ConfirmarDesconexion) }
-            is EventoUi.PedirComando -> pedirComando(evento.comando)
+            is EventoUi.PedirComando -> pedirComando(evento.comando, evento.yaConfirmado)
             EventoUi.ConfirmarDialogo -> confirmarDialogo()
             EventoUi.CerrarDialogo -> _uiState.update { it.copy(dialogo = null) }
         }
@@ -98,9 +99,9 @@ class RobotViewModel(
 
     // ---------- Ordenes ----------
 
-    private fun pedirComando(comando: Comando) {
+    private fun pedirComando(comando: Comando, yaConfirmado: Boolean) {
         if (!habilitado(comando)) return // la UI ya lo muestra deshabilitado; esto es una segunda barrera
-        if (comando.tipo in CON_CONFIRMACION) {
+        if (comando.tipo in CON_CONFIRMACION && !yaConfirmado) {
             _uiState.update { it.copy(dialogo = DialogoUi.Confirmar(comando)) }
         } else {
             enviar(comando)
@@ -182,6 +183,9 @@ class RobotViewModel(
             it.copy(
                 telemetria = telemetria,
                 alertas = alertas,
+                // Hay incidente mientras el robot espera decision y la alerta no fue resuelta.
+                incidenteActivo = if (telemetria?.estado == EstadoOperativo.ESPERANDO_DECISION)
+                    alertas.lastOrNull { it.requiereDecision && !it.reconocida } else null,
                 datosAntiguos = antiguos,
                 segundosDesdeActualizacion = (edadMs / 1000).toInt(),
                 habilitacion = ReglasComando.todas(contexto(telemetria, antiguos, alertas))
