@@ -33,6 +33,7 @@ private val CON_CONFIRMACION = setOf(
 )
 
 private const val MAX_RECIENTES = 5
+private const val MS_BANNER_RECUPERADA = 4000L
 
 // Guarda el estado de las pantallas y sobrevive a la rotacion.
 // Solo conoce la interfaz RobotRepository: no sabe si del otro lado hay un simulador o un robot real.
@@ -47,6 +48,9 @@ class RobotViewModel(
     val uiState: StateFlow<RobotUiState> = _uiState.asStateFlow()
 
     private var contadorComandos = 0
+
+    // Momento en que volvio la conexion (para mostrar el banner "Conexion recuperada" unos segundos).
+    private var recuperadaMs: Long? = null
 
     // Late una vez por segundo para que "hace N s" avance aunque no llegue telemetria nueva.
     private val ticker = flow {
@@ -179,6 +183,8 @@ class RobotViewModel(
         val edadMs = if (telemetria == null) 0L else (reloj() - telemetria.timestampMs).coerceAtLeast(0L)
         val antiguos = telemetria != null &&
             (telemetria.conexion == EstadoConexion.SIN_CONEXION || edadMs > Umbrales.DATOS_ANTIGUOS_MS)
+        if (_uiState.value.datosAntiguos && !antiguos) recuperadaMs = reloj()
+        val recuperada = recuperadaMs?.let { reloj() - it < MS_BANNER_RECUPERADA } ?: false
         _uiState.update {
             it.copy(
                 telemetria = telemetria,
@@ -187,6 +193,7 @@ class RobotViewModel(
                 incidenteActivo = if (telemetria?.estado == EstadoOperativo.ESPERANDO_DECISION)
                     alertas.lastOrNull { it.requiereDecision && !it.reconocida } else null,
                 datosAntiguos = antiguos,
+                conexionRecuperada = recuperada && !antiguos,
                 segundosDesdeActualizacion = (edadMs / 1000).toInt(),
                 habilitacion = ReglasComando.todas(contexto(telemetria, antiguos, alertas))
             )

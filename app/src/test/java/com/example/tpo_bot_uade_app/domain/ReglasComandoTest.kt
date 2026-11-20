@@ -228,16 +228,24 @@ class ReglasComandoTest {
     }
 
     @Test
-    fun conDatosAntiguos_pausarBloqueado() = assertBloqueado(
+    fun conDatosAntiguos_reanudarBloqueado() = assertBloqueado(
         MotivoBloqueo.DATOS_ANTIGUOS,
-        ReglasComando.evaluar(TipoComando.PAUSAR_MISION, contexto(telemetria(EstadoOperativo.EN_MISION), datosAntiguos = true))
+        ReglasComando.evaluar(TipoComando.REANUDAR_MISION, contexto(telemetria(EstadoOperativo.PAUSADO), datosAntiguos = true))
     )
 
     @Test
-    fun sinConexion_pausarBloqueado() = assertBloqueado(
-        MotivoBloqueo.SIN_CONEXION,
+    fun sinConexion_pausarHabilitado_paraIntentarFrenar() = assertHabilitado(
         ReglasComando.evaluar(
             TipoComando.PAUSAR_MISION,
+            contexto(telemetria(EstadoOperativo.EN_MISION, conexion = EstadoConexion.SIN_CONEXION), datosAntiguos = true)
+        )
+    )
+
+    @Test
+    fun sinConexion_cancelarBloqueado() = assertBloqueado(
+        MotivoBloqueo.SIN_CONEXION,
+        ReglasComando.evaluar(
+            TipoComando.CANCELAR_MISION,
             contexto(telemetria(EstadoOperativo.EN_MISION, conexion = EstadoConexion.SIN_CONEXION))
         )
     )

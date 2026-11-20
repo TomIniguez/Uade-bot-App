@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
@@ -32,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.example.tpo_bot_uade_app.R
 import com.example.tpo_bot_uade_app.ui.componentes.ChipHmi
@@ -81,9 +83,20 @@ fun PanelPruebasScreen(
         }
 
         Seccion(stringResource(R.string.pruebas_enlace)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            // Toda la fila es tocable (no solo el interruptor): area grande y mejor para TalkBack.
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+                    .toggleable(
+                        value = estado.desconexionForzada,
+                        role = Role.Switch,
+                        onValueChange = { onEvento(EventoPrueba.ForzarDesconexion(it)) }
+                    )
+            ) {
                 Text(stringResource(R.string.pruebas_forzar_desconexion), modifier = Modifier.weight(1f))
-                Switch(checked = estado.desconexionForzada, onCheckedChange = { onEvento(EventoPrueba.ForzarDesconexion(it)) })
+                Switch(checked = estado.desconexionForzada, onCheckedChange = null)
             }
             OutlinedButton(onClick = { onEvento(EventoPrueba.RechazarProxima) }, modifier = Modifier.fillMaxWidth().height(48.dp)) {
                 Text(stringResource(R.string.pruebas_rechazar))

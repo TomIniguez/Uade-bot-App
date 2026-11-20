@@ -22,6 +22,7 @@ data class RobotUiState(
     val telemetria: Telemetria? = null,
     val datosAntiguos: Boolean = false,
     val segundosDesdeActualizacion: Int = 0,
+    val conexionRecuperada: Boolean = false,       // true unos segundos despues de recuperar el enlace
     val alertas: List<Alerta> = emptyList(),
     val incidenteActivo: Alerta? = null,           // alerta que espera una decision del operador
     val ultimoComando: RegistroComando? = null,
