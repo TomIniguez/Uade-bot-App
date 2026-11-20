@@ -1,5 +1,6 @@
 package com.example.tpo_bot_uade_app.ui.robot
 
+import com.example.tpo_bot_uade_app.domain.ContextoComando
 import com.example.tpo_bot_uade_app.domain.Habilitacion
 import com.example.tpo_bot_uade_app.domain.model.Alerta
 import com.example.tpo_bot_uade_app.domain.model.Comando
@@ -22,6 +23,7 @@ data class RobotUiState(
     val datosAntiguos: Boolean = false,
     val segundosDesdeActualizacion: Int = 0,
     val alertas: List<Alerta> = emptyList(),
+    val incidenteActivo: Alerta? = null,           // alerta que espera una decision del operador
     val ultimoComando: RegistroComando? = null,
     val comandosRecientes: List<RegistroComando> = emptyList(),   // ultimos 5, el mas nuevo primero
     val habilitacion: Map<TipoComando, Habilitacion> = emptyMap(),
@@ -36,13 +38,24 @@ data class RobotUiState(
     // La definicion de la mision en curso (para el mini mapa y la lista de puntos).
     val definicionMisionActual: DefinicionMision?
         get() = telemetria?.mision?.let { m -> misiones.firstOrNull { it.id == m.id } }
+
+    // Alertas sin reconocer, la mas nueva primero.
+    val alertasActivas: List<Alerta> get() = alertas.filter { !it.reconocida }.sortedByDescending { it.timestampMs }
+
+    val alertasReconocidas: List<Alerta> get() = alertas.filter { it.reconocida }.sortedByDescending { it.timestampMs }
+
+    // Lo que necesita ReglasComando para evaluar botones puntuales (por ejemplo, Reconocer una alerta).
+    val contextoComando: ContextoComando
+        get() = ContextoComando(telemetria, datosAntiguos, comandosRecientes.any { it.estado == EstadoComando.PENDIENTE }, alertas)
 }
 
 // Lo que la UI le puede pedir al ViewModel. Es la unica forma de "hablarle".
 sealed class EventoUi {
     data class SeleccionarRobot(val robotId: String) : EventoUi()
     data object Desconectar : EventoUi()                         // abre el dialogo de confirmacion
-    data class PedirComando(val comando: Comando) : EventoUi()   // abre dialogo si corresponde
+    // Abre un dialogo de confirmacion si corresponde. "yaConfirmado" = la orden sale de un dialogo
+    // que ya es explicito (el de incidente), asi que no se pregunta dos veces.
+    data class PedirComando(val comando: Comando, val yaConfirmado: Boolean = false) : EventoUi()
     data object ConfirmarDialogo : EventoUi()
     data object CerrarDialogo : EventoUi()
 }

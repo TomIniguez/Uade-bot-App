@@ -30,7 +30,9 @@ import com.example.tpo_bot_uade_app.domain.Umbrales
 import com.example.tpo_bot_uade_app.domain.model.Comando
 import com.example.tpo_bot_uade_app.domain.model.EstadoOperativo
 import com.example.tpo_bot_uade_app.domain.model.TipoComando
+import com.example.tpo_bot_uade_app.ui.componentes.AccionesAlerta
 import com.example.tpo_bot_uade_app.ui.componentes.BotonComando
+import com.example.tpo_bot_uade_app.ui.componentes.TarjetaAlerta
 import com.example.tpo_bot_uade_app.ui.componentes.ChipEstadoComando
 import com.example.tpo_bot_uade_app.ui.componentes.ChipEstadoOperativo
 import com.example.tpo_bot_uade_app.ui.componentes.Jerarquia
@@ -69,6 +71,11 @@ fun SupervisionScreen(uiState: RobotUiState, onEvento: (EventoUi) -> Unit, modif
                 style = MaterialTheme.typography.labelMedium,
                 color = if (antiguo) colorDe(NivelVisual.ADVERTENCIA) else TextoSecundario
             )
+        }
+
+        // La alerta activa mas nueva (sin contar incidentes, que abren su propio dialogo), con su accion sugerida.
+        uiState.alertasActivas.firstOrNull { !it.requiereDecision }?.let { alerta ->
+            TarjetaAlerta(alerta) { AccionesAlerta(alerta, uiState, onEvento) }
         }
 
         TarjetaMision(t.mision, antiguo = antiguo)

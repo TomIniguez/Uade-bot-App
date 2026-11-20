@@ -6,6 +6,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.tpo_bot_uade_app.data.simulador.SimulatedRobotRepository
 import com.example.tpo_bot_uade_app.domain.ControlSimulacion
 import com.example.tpo_bot_uade_app.domain.RobotRepository
+import com.example.tpo_bot_uade_app.ui.pruebas.SimulacionViewModel
 import com.example.tpo_bot_uade_app.ui.robot.RobotViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,5 +28,6 @@ class AppContainer {
 
     val viewModelFactory: ViewModelProvider.Factory = viewModelFactory {
         initializer { RobotViewModel(robotRepository) }
+        initializer { SimulacionViewModel(controlSimulacion, robotRepository) }
     }
 }

@@ -76,3 +76,25 @@ fun textoMotivo(motivo: MotivoBloqueo, telemetria: Telemetria?): String = when (
         }
     )
 }
+
+@Composable
+fun textoDecision(decision: com.example.tpo_bot_uade_app.domain.model.DecisionIncidente): String = stringResource(
+    when (decision) {
+        com.example.tpo_bot_uade_app.domain.model.DecisionIncidente.REINTENTAR -> R.string.dec_reintentar
+        com.example.tpo_bot_uade_app.domain.model.DecisionIncidente.OMITIR_PUNTO -> R.string.dec_omitir
+        com.example.tpo_bot_uade_app.domain.model.DecisionIncidente.REINSPECCIONAR -> R.string.dec_reinspeccionar
+        com.example.tpo_bot_uade_app.domain.model.DecisionIncidente.CONTINUAR -> R.string.dec_continuar
+    }
+)
+
+@Composable
+fun textoTipoAlerta(tipo: com.example.tpo_bot_uade_app.domain.model.TipoAlerta): String = stringResource(
+    when (tipo) {
+        com.example.tpo_bot_uade_app.domain.model.TipoAlerta.BATERIA_BAJA -> R.string.alerta_bateria_baja
+        com.example.tpo_bot_uade_app.domain.model.TipoAlerta.BATERIA_CRITICA -> R.string.alerta_bateria_critica
+        com.example.tpo_bot_uade_app.domain.model.TipoAlerta.OBSTACULO -> R.string.alerta_obstaculo
+        com.example.tpo_bot_uade_app.domain.model.TipoAlerta.ANOMALIA_TERMICA -> R.string.alerta_anomalia
+        com.example.tpo_bot_uade_app.domain.model.TipoAlerta.CONEXION_RECUPERADA -> R.string.alerta_conexion_recuperada
+        com.example.tpo_bot_uade_app.domain.model.TipoAlerta.PAUSA_AUTOMATICA -> R.string.alerta_pausa_automatica
+    }
+)

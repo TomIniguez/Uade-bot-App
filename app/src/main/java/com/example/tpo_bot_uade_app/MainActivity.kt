@@ -9,6 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.tpo_bot_uade_app.ui.navegacion.AppNavegacion
+import com.example.tpo_bot_uade_app.ui.pruebas.SimulacionViewModel
 import com.example.tpo_bot_uade_app.ui.robot.RobotViewModel
 import com.example.tpo_bot_uade_app.ui.theme.TPO_Bot_UADE_AppTheme
 
@@ -27,7 +28,10 @@ class MainActivity : ComponentActivity() {
                 // Un solo RobotViewModel para toda la Activity (se comparte entre pantallas).
                 val viewModel: RobotViewModel = viewModel(factory = container.viewModelFactory)
                 val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-                AppNavegacion(uiState, viewModel::onEvento)
+                // ViewModel del panel de pruebas: tambien de la Activity, asi no pierde la velocidad elegida.
+                val simulacionVm: SimulacionViewModel = viewModel(factory = container.viewModelFactory)
+                val simulacion by simulacionVm.uiState.collectAsStateWithLifecycle()
+                AppNavegacion(uiState, viewModel::onEvento, simulacion, simulacionVm::onEvento)
             }
         }
     }

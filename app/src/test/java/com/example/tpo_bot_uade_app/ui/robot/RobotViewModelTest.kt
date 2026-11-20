@@ -2,6 +2,7 @@ package com.example.tpo_bot_uade_app.ui.robot
 
 import com.example.tpo_bot_uade_app.data.simulador.SimulatedRobotRepository
 import com.example.tpo_bot_uade_app.domain.model.Comando
+import com.example.tpo_bot_uade_app.domain.model.DecisionIncidente
 import com.example.tpo_bot_uade_app.domain.model.EstadoComando
 import com.example.tpo_bot_uade_app.domain.model.EstadoOperativo
 import com.example.tpo_bot_uade_app.domain.model.TipoComando
@@ -41,8 +42,11 @@ class RobotViewModelTest {
 
     // Crea el ViewModel conectado a un robot, corre la prueba y al final cancela sus corrutinas
     // (el "reloj" de 1 s del ViewModel no termina nunca; si no se cancela, runTest se queda esperando).
+    // El repositorio simulado tambien es el ControlSimulacion (para forzar fallas en los tests).
+    private lateinit var repo: SimulatedRobotRepository
+
     private fun probar(robotId: String = "go2-01", prueba: suspend TestScope.(RobotViewModel) -> Unit) = runTest(despachador) {
-        val repo = SimulatedRobotRepository(backgroundScope, Random(1)) { currentTime }
+        repo = SimulatedRobotRepository(backgroundScope, Random(1)) { currentTime }
         val vm = RobotViewModel(repo) { currentTime }
         vm.onEvento(EventoUi.SeleccionarRobot(robotId))
         advanceTimeBy(1_000) // demora de conexion
@@ -110,5 +114,38 @@ class RobotViewModelTest {
         vm.onEvento(EventoUi.ConfirmarDialogo)
         runCurrent()
         assertNull(vm.uiState.value.robotConectado)
+    }
+
+    @Test
+    fun rechazoForzado_seVeRechazadaConMotivo() = probar { vm ->
+        repo.rechazarProximoComando()
+        vm.onEvento(EventoUi.PedirComando(Comando.IniciarMision("M3")))
+        vm.onEvento(EventoUi.ConfirmarDialogo)
+        advanceTimeBy(1_000)
+        runCurrent()
+        val ultimo = vm.uiState.value.ultimoComando!!
+        assertEquals(EstadoComando.RECHAZADA, ultimo.estado)
+        assertEquals("Rechazo forzado desde el panel de pruebas", ultimo.motivo)
+        assertEquals(EstadoOperativo.EN_BASE, vm.uiState.value.telemetria?.estado)
+    }
+
+    @Test
+    fun obstaculo_abreIncidente_yOmitirLoCierra() = probar { vm ->
+        vm.onEvento(EventoUi.PedirComando(Comando.IniciarMision("M2")))
+        vm.onEvento(EventoUi.ConfirmarDialogo)
+        advanceTimeBy(1_000)
+        runCurrent()
+        repo.inyectarObstaculo()
+        runCurrent()
+        val incidente = vm.uiState.value.incidenteActivo!!
+
+        // Desde el dialogo de incidente la decision sale sin pedir otra confirmacion.
+        vm.onEvento(EventoUi.PedirComando(Comando.ResolverIncidente(incidente.id, DecisionIncidente.OMITIR_PUNTO), yaConfirmado = true))
+        assertNull(vm.uiState.value.dialogo)
+        advanceTimeBy(1_000)
+        runCurrent()
+        assertNull(vm.uiState.value.incidenteActivo)
+        assertEquals(EstadoOperativo.EN_MISION, vm.uiState.value.telemetria?.estado)
+        assertEquals(listOf("P1"), vm.uiState.value.telemetria?.mision?.puntosOmitidos)
     }
 }

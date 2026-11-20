@@ -24,7 +24,12 @@ import com.example.tpo_bot_uade_app.ui.componentes.BarraSuperiorRobot
 import com.example.tpo_bot_uade_app.ui.componentes.BotonDetencion
 import com.example.tpo_bot_uade_app.ui.componentes.Destino
 import com.example.tpo_bot_uade_app.ui.componentes.DialogoConfirmacion
+import com.example.tpo_bot_uade_app.ui.alertas.AlertasScreen
+import com.example.tpo_bot_uade_app.ui.componentes.DialogoIncidente
 import com.example.tpo_bot_uade_app.ui.misiones.MisionesScreen
+import com.example.tpo_bot_uade_app.ui.pruebas.EventoPrueba
+import com.example.tpo_bot_uade_app.ui.pruebas.PanelPruebasScreen
+import com.example.tpo_bot_uade_app.ui.pruebas.SimulacionUiState
 import com.example.tpo_bot_uade_app.ui.robot.DialogoUi
 import com.example.tpo_bot_uade_app.ui.robot.EventoUi
 import com.example.tpo_bot_uade_app.ui.robot.RobotUiState
@@ -34,8 +39,18 @@ import com.example.tpo_bot_uade_app.ui.theme.Fondo
 
 // Arma la estructura de la app: barra superior, contenido segun la ruta, Detencion operativa
 // fija y barra inferior. Rutas como texto ("supervision", "misiones") para que sea facil de leer.
+private const val RUTA_PRUEBAS = "pruebas"
+
+// La Detencion operativa se muestra en estas pantallas (Figma). En el panel de pruebas no.
+private val RUTAS_CON_DETENCION = setOf(Destino.SUPERVISION.ruta, Destino.MISIONES.ruta, Destino.ALERTAS.ruta)
+
 @Composable
-fun AppNavegacion(uiState: RobotUiState, onEvento: (EventoUi) -> Unit) {
+fun AppNavegacion(
+    uiState: RobotUiState,
+    onEvento: (EventoUi) -> Unit,
+    simulacion: SimulacionUiState,
+    onEventoPrueba: (EventoPrueba) -> Unit
+) {
     val robot = uiState.robotConectado
     if (robot == null) {
         Scaffold(Modifier.fillMaxSize()) { padding ->
@@ -48,10 +63,12 @@ fun AppNavegacion(uiState: RobotUiState, onEvento: (EventoUi) -> Unit) {
     val entrada by navController.currentBackStackEntryAsState()
     val rutaActual = entrada?.destination?.route
 
+    // Cambiar de pestana: vuelve a Supervision como base y abre la pestana elegida.
+    // No se guarda la pila de cada pestana (todo el estado vive en el ViewModel), asi el panel
+    // de pruebas no reaparece al volver.
     fun ir(ruta: String) = navController.navigate(ruta) {
-        popUpTo(navController.graph.findStartDestination().id) { saveState = true }
+        popUpTo(navController.graph.findStartDestination().id)
         launchSingleTop = true
-        restoreState = true
     }
 
     Scaffold(
@@ -62,27 +79,47 @@ fun AppNavegacion(uiState: RobotUiState, onEvento: (EventoUi) -> Unit) {
                 telemetria = uiState.telemetria,
                 datosAntiguos = uiState.datosAntiguos,
                 segundos = uiState.segundosDesdeActualizacion,
-                onDesconectar = { onEvento(EventoUi.Desconectar) }
+                onDesconectar = { onEvento(EventoUi.Desconectar) },
+                onPruebas = { navController.navigate(RUTA_PRUEBAS) { launchSingleTop = true } }
             )
         },
         bottomBar = {
             Column {
                 // Siempre visible y a un toque, encima de la barra inferior.
-                BotonDetencion(
-                    habilitacion = uiState.habilitacionDe(TipoComando.DETENCION_OPERATIVA),
-                    pendiente = uiState.estaPendiente(TipoComando.DETENCION_OPERATIVA),
-                    telemetria = uiState.telemetria,
-                    onClick = { onEvento(EventoUi.PedirComando(Comando.DetencionOperativa)) },
-                    modifier = Modifier.background(Fondo).padding(horizontal = 16.dp, vertical = 8.dp)
-                )
-                BarraInferior(rutaActual) { ir(it.ruta) }
+                if (rutaActual == null || rutaActual in RUTAS_CON_DETENCION) {
+                    BotonDetencion(
+                        habilitacion = uiState.habilitacionDe(TipoComando.DETENCION_OPERATIVA),
+                        pendiente = uiState.estaPendiente(TipoComando.DETENCION_OPERATIVA),
+                        telemetria = uiState.telemetria,
+                        onClick = { onEvento(EventoUi.PedirComando(Comando.DetencionOperativa)) },
+                        modifier = Modifier.background(Fondo).padding(horizontal = 16.dp, vertical = 8.dp)
+                    )
+                }
+                BarraInferior(rutaActual, uiState.alertasActivas.size) { ir(it.ruta) }
             }
         }
     ) { padding ->
         NavHost(navController, startDestination = Destino.SUPERVISION.ruta, modifier = Modifier.padding(padding)) {
             composable(Destino.SUPERVISION.ruta) { SupervisionScreen(uiState, onEvento) }
             composable(Destino.MISIONES.ruta) { MisionesScreen(uiState, onEvento) }
+            composable(Destino.ALERTAS.ruta) { AlertasScreen(uiState, onEvento) }
+            composable(RUTA_PRUEBAS) {
+                PanelPruebasScreen(simulacion, onEventoPrueba, onVolver = { navController.popBackStack() })
+            }
         }
+    }
+
+    // Incidente: dialogo que no se cierra solo; desaparece cuando el robot deja de esperar decision.
+    uiState.incidenteActivo?.let { alerta ->
+        DialogoIncidente(
+            alerta = alerta,
+            telemetria = uiState.telemetria,
+            contexto = uiState.contextoComando,
+            habilitacion = uiState::habilitacionDe,
+            pendiente = uiState::estaPendiente,
+            ultimoComando = uiState.ultimoComando,
+            onComando = { onEvento(EventoUi.PedirComando(it, yaConfirmado = true)) }
+        )
     }
 
     // Dialogos de confirmacion (los decide el ViewModel; aca solo se dibujan).

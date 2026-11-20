@@ -43,6 +43,59 @@
     <string name="unidad_ms">m/s</string>
     <string name="unidad_pct">%</string>
 
+    <!-- Alertas -->
+    <string name="nav_alertas">Alertas</string>
+    <string name="nav_alertas_contador">Alertas, %1$d activas</string>
+    <string name="alertas_activas">Activas</string>
+    <string name="alertas_reconocidas">Reconocidas</string>
+    <string name="alertas_vacio">Sin alertas activas</string>
+    <string name="alerta_bateria_baja">Batería baja</string>
+    <string name="alerta_bateria_critica">Batería crítica</string>
+    <string name="alerta_obstaculo">Obstáculo</string>
+    <string name="alerta_anomalia">Anomalía térmica</string>
+    <string name="alerta_conexion_recuperada">Conexión recuperada</string>
+    <string name="alerta_pausa_automatica">Pausa automática</string>
+    <string name="alerta_reconocida">%1$s · Reconocida</string>
+    <string name="alerta_requiere_decision">Requiere una decisión del operador</string>
+    <string name="alerta_sugerida_regresar">Acción sugerida: regresar a punto seguro</string>
+    <string name="boton_reconocer">Reconocer</string>
+    <string name="sev_info">Informativa</string>
+    <string name="sev_advertencia">Advertencia</string>
+    <string name="sev_critica">Crítica</string>
+
+    <!-- Incidente -->
+    <string name="inc_titulo_obstaculo">Obstáculo en el recorrido</string>
+    <string name="inc_titulo_anomalia">Anomalía térmica</string>
+    <string name="inc_punto">Punto afectado: %1$s</string>
+    <string name="inc_pregunta">¿Qué hace el robot?</string>
+    <string name="dec_reintentar">Reintentar</string>
+    <string name="dec_omitir">Omitir punto</string>
+    <string name="dec_reinspeccionar">Reinspeccionar</string>
+    <string name="dec_continuar">Continuar (revisión humana)</string>
+
+    <!-- Panel de pruebas -->
+    <string name="pruebas_titulo">Panel de pruebas</string>
+    <string name="pruebas_rotulo">Solo demostración</string>
+    <string name="pruebas_explicacion">Fuerza fallas en el robot simulado para mostrar los escenarios. Con un robot real este panel no existe.</string>
+    <string name="pruebas_enlace">Enlace y órdenes</string>
+    <string name="pruebas_forzar_desconexion">Forzar desconexión</string>
+    <string name="pruebas_rechazar">Rechazar la próxima orden</string>
+    <string name="pruebas_bateria">Fijar batería: %1$d %%</string>
+    <string name="pruebas_aplicar">Aplicar</string>
+    <string name="pruebas_incidentes">Incidentes</string>
+    <string name="pruebas_obstaculo">Inyectar obstáculo</string>
+    <string name="pruebas_anomalia">Inyectar anomalía térmica</string>
+    <string name="pruebas_solo_en_mision">Disponible solo con una misión en curso.</string>
+    <string name="pruebas_velocidad">Velocidad de la simulación</string>
+    <string name="pruebas_factor">×%1$d</string>
+    <string name="pruebas_reiniciar">Reiniciar simulación</string>
+    <string name="boton_volver">Volver</string>
+    <string name="aviso_rechazo">Listo: la próxima orden va a ser rechazada.</string>
+    <string name="aviso_bateria">Batería fijada.</string>
+    <string name="aviso_obstaculo">Obstáculo inyectado.</string>
+    <string name="aviso_anomalia">La próxima inspección va a medir 58 °C.</string>
+    <string name="aviso_reiniciada">Simulación reiniciada.</string>
+
     <!-- Navegacion -->
     <string name="nav_supervision">Supervisión</string>
     <string name="nav_misiones">Misiones</string>
@@ -101,7 +154,7 @@
     <string name="mision_ninguna_ayuda">Elegí una misión en la pestaña Misiones.</string>
     <string name="mision_progreso">%1$d %%</string>
     <string name="mision_punto_actual">Punto actual: %1$s</string>
-    <string name="mision_puntos">%1$d de %2$d puntos</string>
+    <string name="mision_puntos">%1$d de %2$d puntos recorridos</string>
     <string name="misiones_en_curso">Misión en curso</string>
     <string name="misiones_disponibles">Misiones disponibles</string>
     <string name="mapa_descripcion">Mapa del depósito. Robot en %1$s.</string>
