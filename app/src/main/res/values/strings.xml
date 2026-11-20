@@ -1,45 +1,257 @@
 <resources>
-    <string name="app_name">TPO_Bot_UADE_App</string>
+    <string name="app_name">HMI Go2</string>
 
-    <!-- Pantalla de conexión -->
-    <string name="conexion_titulo">Control del robot</string>
-    <string name="campo_ip">IP:puerto del backend</string>
-    <string name="campo_equipo">Nombre del equipo</string>
+    <!-- Seleccion de robot -->
+    <string name="seleccion_titulo">Elegí un robot</string>
+    <string name="seleccion_pie">Robot simulado. No requiere conexión a internet.</string>
+    <string name="robot_modelo_id">%1$s · %2$s</string>
+    <string name="robot_bateria_baja">Batería baja</string>
+    <string name="robot_fuera_de_linea">Fuera de línea</string>
+    <string name="robot_motivo_fuera_de_linea">Este robot no está disponible para conectarse.</string>
     <string name="boton_conectar">Conectar</string>
-
-    <!-- Pantalla de control -->
-    <string name="equipo_actual">Equipo: %1$s</string>
     <string name="boton_desconectar">Desconectar</string>
-    <string name="boton_parar">■ PARAR</string>
-    <string name="mover_curva_izq">↖ Curva izq</string>
-    <string name="mover_adelante">▲ Adelante</string>
-    <string name="mover_curva_der">Curva der ↗</string>
-    <string name="mover_costado_izq">◀ Costado</string>
-    <string name="mover_costado_der">Costado ▶</string>
-    <string name="mover_girar_izq">⟲ Girar izq</string>
-    <string name="mover_atras">▼ Atrás</string>
-    <string name="mover_girar_der">Girar der ⟳</string>
 
-    <!-- Panel de estado -->
-    <string name="estado_sin_datos">Estado: sin datos del backend</string>
-    <string name="estado_robot">Robot: %1$s (%2$s)</string>
-    <string name="estado_desconocido">?</string>
-    <string name="estado_robot_conectado">Robot conectado</string>
-    <string name="estado_robot_desconectado">Robot desconectado</string>
-    <string name="estado_bateria">Batería: %1$d %%</string>
-    <string name="estado_control">Control: %1$s</string>
-    <string name="estado_control_nadie">nadie</string>
-    <string name="estado_otro_equipo">Ojo: el control lo tiene otro equipo (%1$s).</string>
+    <!-- Conexion y bateria -->
+    <string name="conexion_ok">Conectado · %1$d %%</string>
+    <string name="conexion_sin">Sin conexión</string>
+    <string name="conexion_datos_antiguos">Datos de hace %1$d s</string>
+    <string name="bateria_pct">%1$d %%</string>
 
-    <!-- Mensajes al usuario -->
-    <string name="error_sesion_vencida">La sesión venció. Volvé a conectarte.</string>
-    <string name="error_sin_conexion">No se pudo conectar. Revisá IP y WiFi.</string>
-    <string name="error_bloqueado">Acción bloqueada por seguridad.</string>
-    <string name="error_ocupado">El robot está ocupado por otro equipo.</string>
-    <string name="error_pedido">Error interno: pedido mal armado.</string>
-    <string name="error_robot">El robot no pudo ejecutar la orden.</string>
-    <string name="error_http">Error inesperado (HTTP %1$d).</string>
-    <string name="error_ip">La IP no es válida.</string>
-    <string name="error_perdio_conexion">Se perdió la conexión.</string>
-    <string name="aviso_accion_ok">Acción ejecutada</string>
+    <!-- Estados operativos -->
+    <string name="estado_en_base">En base</string>
+    <string name="estado_en_mision">En misión</string>
+    <string name="estado_pausado">Pausado</string>
+    <string name="estado_esperando_decision">Esperando decisión</string>
+    <string name="estado_regresando">Regresando</string>
+    <string name="estado_detenido">Detenido</string>
+
+    <!-- Supervision -->
+    <string name="ultima_actualizacion">Actualizado hace %1$d s</string>
+    <string name="tele_temperatura">Temperatura</string>
+    <string name="tele_puntos">Puntos</string>
+    <string name="tele_anomalias">Anomalías</string>
+    <string name="tele_zona">Zona</string>
+    <string name="tele_velocidad">Velocidad</string>
+    <string name="tele_senal">Señal</string>
+    <string name="valor_de_total">%1$d de %2$d</string>
+    <string name="sin_dato">—</string>
+
+    <!-- Unidades -->
+    <string name="unidad_celsius">°C</string>
+    <string name="unidad_ms">m/s</string>
+    <string name="unidad_pct">%</string>
+    <string name="unidad_m">m</string>
+    <string name="unidad_grados">°</string>
+
+    <!-- Telemetria detallada -->
+    <string name="ver_telemetria">Ver toda la telemetría</string>
+    <string name="tele_titulo">Telemetría detallada</string>
+    <string name="tg_enlace">Enlace</string>
+    <string name="tg_energia">Energía</string>
+    <string name="tg_operacion">Operación</string>
+    <string name="tg_ubicacion">Ubicación y movimiento</string>
+    <string name="tg_servicio">Servicio de inspección</string>
+    <string name="tg_alertas">Alertas</string>
+    <string name="tele_conexion">Conexión</string>
+    <string name="tele_conectado">Conectado</string>
+    <string name="tele_actualizacion">Última actualización</string>
+    <string name="tele_hace">hace %1$d s</string>
+    <string name="tele_bateria">Batería</string>
+    <string name="tele_estado">Estado</string>
+    <string name="tele_mision">Misión</string>
+    <string name="tele_progreso">Progreso</string>
+    <string name="tele_x">Posición x</string>
+    <string name="tele_y">Posición y</string>
+    <string name="tele_rumbo">Rumbo</string>
+    <string name="tele_alertas_activas">Activas sin reconocer</string>
+
+    <!-- Alertas -->
+    <string name="nav_alertas">Alertas</string>
+    <string name="alertas_activas">Activas</string>
+    <string name="alertas_reconocidas">Reconocidas</string>
+    <string name="alertas_vacio">Sin alertas activas</string>
+    <string name="alerta_bateria_baja">Batería baja</string>
+    <string name="alerta_bateria_critica">Batería crítica</string>
+    <string name="alerta_obstaculo">Obstáculo</string>
+    <string name="alerta_anomalia">Anomalía térmica</string>
+    <string name="alerta_conexion_recuperada">Conexión recuperada</string>
+    <string name="alerta_pausa_automatica">Pausa automática</string>
+    <string name="alerta_reconocida">%1$s · Reconocida</string>
+    <string name="alerta_requiere_decision">Requiere una decisión del operador</string>
+    <string name="alerta_sugerida_regresar">Acción sugerida: regresar a punto seguro</string>
+    <string name="boton_reconocer">Reconocer</string>
+    <string name="sev_info">Informativa</string>
+    <string name="sev_advertencia">Advertencia</string>
+    <string name="sev_critica">Crítica</string>
+
+    <!-- Incidente -->
+    <string name="inc_titulo_obstaculo">Obstáculo en el recorrido</string>
+    <string name="inc_titulo_anomalia">Anomalía térmica</string>
+    <string name="inc_punto">Punto afectado: %1$s</string>
+    <string name="inc_pregunta">¿Qué hace el robot?</string>
+    <string name="dec_reintentar">Reintentar</string>
+    <string name="dec_omitir">Omitir punto</string>
+    <string name="dec_reinspeccionar">Reinspeccionar</string>
+    <string name="dec_continuar">Continuar (revisión humana)</string>
+
+    <!-- Panel de pruebas -->
+    <string name="pruebas_titulo">Panel de pruebas</string>
+    <string name="pruebas_rotulo">Solo demostración</string>
+    <string name="pruebas_explicacion">Fuerza fallas en el robot simulado para mostrar los escenarios. Con un robot real este panel no existe.</string>
+    <string name="pruebas_enlace">Enlace y órdenes</string>
+    <string name="pruebas_forzar_desconexion">Forzar desconexión</string>
+    <string name="pruebas_rechazar">Rechazar la próxima orden</string>
+    <string name="pruebas_bateria">Fijar batería: %1$d %%</string>
+    <string name="pruebas_aplicar">Aplicar</string>
+    <string name="pruebas_incidentes">Incidentes</string>
+    <string name="pruebas_obstaculo">Inyectar obstáculo</string>
+    <string name="pruebas_anomalia">Inyectar anomalía térmica</string>
+    <string name="pruebas_solo_en_mision">Disponible solo con una misión en curso.</string>
+    <string name="pruebas_velocidad">Velocidad de la simulación</string>
+    <string name="pruebas_factor">×%1$d</string>
+    <string name="pruebas_reiniciar">Reiniciar simulación</string>
+    <string name="boton_volver">Volver</string>
+    <string name="aviso_rechazo">Listo: la próxima orden va a ser rechazada.</string>
+    <string name="aviso_bateria">Batería fijada.</string>
+    <string name="aviso_obstaculo">Obstáculo inyectado.</string>
+    <string name="aviso_anomalia">La próxima inspección va a medir 58 °C.</string>
+    <string name="aviso_reiniciada">Simulación reiniciada.</string>
+
+    <!-- Desconexion -->
+    <string name="banner_sin_conexion">Sin conexión — datos de hace %1$d s</string>
+    <string name="banner_sin_conexion_detalle">Los valores que ves no están actualizados. Las órdenes pueden no llegar.</string>
+    <string name="banner_datos_antiguos">Datos de hace %1$d s</string>
+    <string name="banner_datos_antiguos_detalle">El robot no envía datos nuevos. Esperá antes de dar órdenes.</string>
+    <string name="banner_recuperada">Conexión recuperada</string>
+    <string name="banner_recuperada_detalle">Los datos vuelven a estar actualizados. Revisá el estado de la última orden.</string>
+
+    <!-- Historial -->
+    <string name="nav_historial">Historial</string>
+    <string name="h_pestana_misiones">Misiones (%1$d)</string>
+    <string name="h_pestana_eventos">Eventos (%1$d)</string>
+    <string name="h_vacio_misiones">Todavía no hay misiones terminadas.</string>
+    <string name="h_vacio_eventos">Todavía no hay eventos registrados.</string>
+    <string name="h_borrar">Borrar historial</string>
+    <string name="h_borrar_titulo">¿Borrar todo el historial?</string>
+    <string name="h_borrar_texto">Se eliminan todas las misiones y eventos guardados en este teléfono. No se puede deshacer.</string>
+    <string name="h_item_mision">%1$s · %2$s</string>
+    <string name="h_item_mision_detalle">%1$s · %2$s</string>
+    <string name="h_resultado">Resultado</string>
+    <string name="h_robot">Robot</string>
+    <string name="h_inicio">Inicio</string>
+    <string name="h_fin">Fin</string>
+    <string name="h_puntos">Puntos inspeccionados</string>
+    <string name="h_bateria">Batería (inicio → fin)</string>
+    <string name="h_bateria_valor">%1$d %% → %2$d %%</string>
+    <string name="h_eventos_mision">Eventos de esta misión</string>
+    <!-- Textos que se guardan en el historial -->
+    <string name="h_mision_iniciada">Misión iniciada</string>
+    <string name="h_mision_completada">Misión completada</string>
+    <string name="h_mision_cancelada">Misión cancelada</string>
+    <string name="h_mision_abortada">Misión abortada</string>
+    <string name="h_mision_detalle">%1$s · %2$s · %3$s</string>
+    <string name="h_conexion_perdida">Conexión perdida</string>
+    <string name="h_conexion_recuperada">Conexión recuperada</string>
+    <string name="h_comando">%1$s · %2$s</string>
+    <string name="h_decision">Decisión: %1$s</string>
+    <string name="h_segundo_plano">La app pasó a segundo plano con una misión activa</string>
+
+    <!-- Navegacion -->
+    <string name="nav_supervision">Supervisión</string>
+    <string name="nav_misiones">Misiones</string>
+
+    <!-- Ordenes -->
+    <string name="cmd_iniciar">Iniciar misión</string>
+    <string name="cmd_pausar">Pausar misión</string>
+    <string name="cmd_reanudar">Reanudar misión</string>
+    <string name="cmd_cancelar">Cancelar misión</string>
+    <string name="cmd_regresar">Regresar a punto seguro</string>
+    <string name="cmd_detencion">Detención operativa</string>
+    <string name="cmd_reconocer">Reconocer alerta</string>
+    <string name="cmd_resolver">Decisión ante incidente</string>
+    <string name="boton_iniciar">Iniciar</string>
+    <string name="boton_cancelar">Cancelar</string>
+    <string name="detencion_leyenda">Orden de software. No reemplaza la parada de emergencia física.</string>
+
+    <!-- Estado de una orden -->
+    <string name="ec_pendiente">Pendiente</string>
+    <string name="ec_confirmada">Confirmada</string>
+    <string name="ec_rechazada">Rechazada</string>
+    <string name="ec_sin_respuesta">Sin respuesta</string>
+    <string name="ec_linea">%1$s · %2$s · %3$s</string>
+    <string name="ec_sin_respuesta_detalle">No hubo respuesta del robot. La orden no fue confirmada.</string>
+    <string name="ultima_orden">Última orden</string>
+    <string name="ultima_orden_ninguna">Todavía no se envió ninguna orden.</string>
+    <string name="seccion_control">Control</string>
+
+    <!-- Motivos de boton deshabilitado -->
+    <string name="mot_sin_telemetria">Esperando datos del robot</string>
+    <string name="mot_pendiente">Hay otra orden esperando respuesta</string>
+    <string name="mot_sin_conexion">Sin conexión con el robot</string>
+    <string name="mot_datos_antiguos">Los datos del robot no están actualizados</string>
+    <string name="mot_no_en_base">El robot tiene que estar en la base</string>
+    <string name="mot_sin_mision">No hay una misión en curso</string>
+    <string name="mot_no_pausada">La misión no está pausada</string>
+    <string name="mot_sin_mision_cancelar">No hay una misión para cancelar</string>
+    <string name="mot_ya_en_base">El robot ya está en la base</string>
+    <string name="mot_ya_regresando">El robot ya está regresando</string>
+    <string name="mot_ya_detenido">El robot ya está detenido</string>
+    <string name="mot_bateria_inicio">Batería insuficiente (%1$d %%, mínimo %2$d %%)</string>
+    <string name="mot_bateria_reanudar">Batería insuficiente para reanudar (%1$d %%)</string>
+    <string name="mot_alerta_critica">Hay una alerta crítica sin reconocer</string>
+    <string name="mot_sin_incidente">No hay un incidente esperando decisión</string>
+    <string name="mot_ya_reconocida">La alerta ya fue reconocida</string>
+    <string name="mot_requiere_decision">Esta alerta requiere una decisión</string>
+    <string name="mot_decision_no_valida">Decisión no válida para este incidente</string>
+
+    <!-- Mision -->
+    <string name="em_en_curso">En curso</string>
+    <string name="em_pausada">Pausada</string>
+    <string name="em_completada">Completada</string>
+    <string name="em_cancelada">Cancelada</string>
+    <string name="em_abortada">Abortada</string>
+    <string name="mision_ninguna">Sin misión</string>
+    <string name="mision_ninguna_ayuda">Elegí una misión en la pestaña Misiones.</string>
+    <string name="mision_progreso">%1$d %%</string>
+    <string name="mision_punto_actual">Punto actual: %1$s</string>
+    <string name="misiones_en_curso">Misión en curso</string>
+    <string name="misiones_disponibles">Misiones disponibles</string>
+    <string name="mapa_descripcion">Mapa del depósito. Robot en %1$s.</string>
+
+    <!-- Dialogos -->
+    <string name="dlg_iniciar_titulo">¿Iniciar «%1$s»?</string>
+    <string name="dlg_cancelar_titulo">¿Cancelar la misión?</string>
+    <string name="dlg_cancelar_texto">El robot deja de inspeccionar y vuelve solo a la base. La misión queda como cancelada.</string>
+    <string name="dlg_cancelar_confirmar">Cancelar misión</string>
+    <string name="dlg_regresar_titulo">¿Regresar a punto seguro?</string>
+    <string name="dlg_regresar_texto">El robot interrumpe lo que está haciendo y vuelve a la base de carga.</string>
+    <string name="dlg_regresar_texto_sin_conexion">No hay conexión: la orden se va a enviar, pero puede que no llegue. Revisá después si fue confirmada.</string>
+    <string name="dlg_desconectar_titulo">¿Desconectar el robot?</string>
+    <string name="dlg_desconectar_texto">La app deja de recibir datos. El robot sigue con lo que estaba haciendo.</string>
+
+    <!-- Plurales (one = 1, other = resto) -->
+    <plurals name="misiones_resumen">
+        <item quantity="one">%1$d punto · %2$d min aprox.</item>
+        <item quantity="other">%1$d puntos · %2$d min aprox.</item>
+    </plurals>
+    <plurals name="dlg_iniciar_texto">
+        <item quantity="one">El robot saldrá de la base y recorrerá %1$d punto de control.</item>
+        <item quantity="other">El robot saldrá de la base y recorrerá %1$d puntos de control.</item>
+    </plurals>
+    <plurals name="p_puntos_recorridos">
+        <item quantity="one">%1$d de %2$d punto recorrido</item>
+        <item quantity="other">%1$d de %2$d puntos recorridos</item>
+    </plurals>
+    <plurals name="p_puntos_inspeccionados">
+        <item quantity="one">%1$d de %2$d punto inspeccionado</item>
+        <item quantity="other">%1$d de %2$d puntos inspeccionados</item>
+    </plurals>
+    <plurals name="p_anomalias">
+        <item quantity="one">%1$d anomalía</item>
+        <item quantity="other">%1$d anomalías</item>
+    </plurals>
+    <plurals name="nav_alertas_contador">
+        <item quantity="one">Alertas, %1$d activa</item>
+        <item quantity="other">Alertas, %1$d activas</item>
+    </plurals>
 </resources>

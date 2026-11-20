@@ -1,0 +1,204 @@
+package com.example.tpo_bot_uade_app.ui.navegacion
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import com.example.tpo_bot_uade_app.R
+import com.example.tpo_bot_uade_app.domain.model.Comando
+import com.example.tpo_bot_uade_app.domain.model.TipoComando
+import com.example.tpo_bot_uade_app.ui.componentes.BannerDesconexion
+import com.example.tpo_bot_uade_app.ui.componentes.BarraInferior
+import com.example.tpo_bot_uade_app.ui.componentes.BarraSuperiorRobot
+import com.example.tpo_bot_uade_app.ui.componentes.BotonDetencion
+import com.example.tpo_bot_uade_app.ui.componentes.Destino
+import com.example.tpo_bot_uade_app.ui.componentes.DialogoConfirmacion
+import com.example.tpo_bot_uade_app.ui.alertas.AlertasScreen
+import com.example.tpo_bot_uade_app.ui.componentes.DialogoIncidente
+import com.example.tpo_bot_uade_app.ui.historial.EventoHistorial
+import com.example.tpo_bot_uade_app.ui.historial.HistorialScreen
+import com.example.tpo_bot_uade_app.ui.historial.HistorialUiState
+import com.example.tpo_bot_uade_app.ui.misiones.MisionesScreen
+import com.example.tpo_bot_uade_app.ui.pruebas.EventoPrueba
+import com.example.tpo_bot_uade_app.ui.pruebas.PanelPruebasScreen
+import com.example.tpo_bot_uade_app.ui.pruebas.SimulacionUiState
+import com.example.tpo_bot_uade_app.ui.robot.DialogoUi
+import com.example.tpo_bot_uade_app.ui.robot.EventoUi
+import com.example.tpo_bot_uade_app.ui.robot.RobotUiState
+import com.example.tpo_bot_uade_app.ui.seleccion.SeleccionRobotScreen
+import com.example.tpo_bot_uade_app.ui.supervision.SupervisionScreen
+import com.example.tpo_bot_uade_app.ui.telemetria.TelemetriaScreen
+import com.example.tpo_bot_uade_app.ui.theme.Fondo
+
+// Arma la estructura de la app: barra superior, contenido segun la ruta, Detencion operativa
+// fija y barra inferior. Rutas como texto ("supervision", "misiones") para que sea facil de leer.
+private const val RUTA_PRUEBAS = "pruebas"
+private const val RUTA_TELEMETRIA = "telemetria"
+
+// La Detencion operativa se muestra en estas pantallas (Figma). En el panel de pruebas no.
+private val RUTAS_CON_DETENCION = setOf(Destino.SUPERVISION.ruta, Destino.MISIONES.ruta, Destino.ALERTAS.ruta)
+
+@Composable
+fun AppNavegacion(
+    uiState: RobotUiState,
+    onEvento: (EventoUi) -> Unit,
+    simulacion: SimulacionUiState,
+    onEventoPrueba: (EventoPrueba) -> Unit,
+    historial: HistorialUiState,
+    onEventoHistorial: (EventoHistorial) -> Unit
+) {
+    val robot = uiState.robotConectado
+    if (robot == null) {
+        Scaffold(Modifier.fillMaxSize()) { padding ->
+            SeleccionRobotScreen(uiState, onEvento, Modifier.padding(padding))
+        }
+        return
+    }
+
+    val navController = rememberNavController()
+    val entrada by navController.currentBackStackEntryAsState()
+    val rutaActual = entrada?.destination?.route
+
+    // Cambiar de pestana: vuelve a Supervision como base y abre la pestana elegida.
+    // No se guarda la pila de cada pestana (todo el estado vive en el ViewModel), asi el panel
+    // de pruebas no reaparece al volver.
+    fun ir(ruta: String) = navController.navigate(ruta) {
+        popUpTo(navController.graph.findStartDestination().id)
+        launchSingleTop = true
+    }
+
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        topBar = {
+            Column {
+                BarraSuperiorRobot(
+                    nombreRobot = robot.nombre,
+                    telemetria = uiState.telemetria,
+                    datosAntiguos = uiState.datosAntiguos,
+                    segundos = uiState.segundosDesdeActualizacion,
+                    onDesconectar = { onEvento(EventoUi.Desconectar) },
+                    onPruebas = { navController.navigate(RUTA_PRUEBAS) { launchSingleTop = true } }
+                )
+                // Banner global: sin conexion / datos antiguos / conexion recuperada.
+                BannerDesconexion(
+                    telemetria = uiState.telemetria,
+                    datosAntiguos = uiState.datosAntiguos,
+                    segundos = uiState.segundosDesdeActualizacion,
+                    conexionRecuperada = uiState.conexionRecuperada
+                )
+            }
+        },
+        bottomBar = {
+            Column {
+                // Siempre visible y a un toque, encima de la barra inferior.
+                if (rutaActual == null || rutaActual in RUTAS_CON_DETENCION) {
+                    BotonDetencion(
+                        habilitacion = uiState.habilitacionDe(TipoComando.DETENCION_OPERATIVA),
+                        pendiente = uiState.estaPendiente(TipoComando.DETENCION_OPERATIVA),
+                        telemetria = uiState.telemetria,
+                        onClick = { onEvento(EventoUi.PedirComando(Comando.DetencionOperativa)) },
+                        modifier = Modifier.background(Fondo).padding(horizontal = 16.dp, vertical = 8.dp)
+                    )
+                }
+                // Telemetria detallada y Pruebas se abren desde Supervision: esa pestana queda marcada.
+                val rutaBarra = if (rutaActual == RUTA_TELEMETRIA || rutaActual == RUTA_PRUEBAS) Destino.SUPERVISION.ruta else rutaActual
+                BarraInferior(rutaBarra, uiState.alertasActivas.size) { ir(it.ruta) }
+            }
+        }
+    ) { padding ->
+        NavHost(navController, startDestination = Destino.SUPERVISION.ruta, modifier = Modifier.padding(padding)) {
+            composable(Destino.SUPERVISION.ruta) {
+                SupervisionScreen(uiState, onEvento, onVerTelemetria = { navController.navigate(RUTA_TELEMETRIA) { launchSingleTop = true } })
+            }
+            composable(RUTA_TELEMETRIA) { TelemetriaScreen(uiState, onVolver = { navController.popBackStack() }) }
+            composable(Destino.MISIONES.ruta) { MisionesScreen(uiState, onEvento) }
+            composable(Destino.ALERTAS.ruta) { AlertasScreen(uiState, onEvento) }
+            composable(Destino.HISTORIAL.ruta) { HistorialScreen(historial, onEventoHistorial) }
+            composable(RUTA_PRUEBAS) {
+                PanelPruebasScreen(simulacion, onEventoPrueba, onVolver = { navController.popBackStack() })
+            }
+        }
+    }
+
+    // Incidente: dialogo que no se cierra solo; desaparece cuando el robot deja de esperar decision.
+    uiState.incidenteActivo?.let { alerta ->
+        DialogoIncidente(
+            alerta = alerta,
+            telemetria = uiState.telemetria,
+            contexto = uiState.contextoComando,
+            habilitacion = uiState::habilitacionDe,
+            pendiente = uiState::estaPendiente,
+            ultimoComando = uiState.ultimoComando,
+            onComando = { onEvento(EventoUi.PedirComando(it, yaConfirmado = true)) }
+        )
+    }
+
+    // Dialogos de confirmacion (los decide el ViewModel; aca solo se dibujan).
+    uiState.dialogo?.let { dialogo ->
+        Dialogos(dialogo, uiState, onEvento, onIniciarConfirmado = { ir(Destino.SUPERVISION.ruta) })
+    }
+}
+
+@Composable
+private fun Dialogos(
+    dialogo: DialogoUi,
+    uiState: RobotUiState,
+    onEvento: (EventoUi) -> Unit,
+    onIniciarConfirmado: () -> Unit
+) {
+    val cerrar = { onEvento(EventoUi.CerrarDialogo) }
+    when (dialogo) {
+        DialogoUi.ConfirmarDesconexion -> DialogoConfirmacion(
+            titulo = stringResource(R.string.dlg_desconectar_titulo),
+            texto = stringResource(R.string.dlg_desconectar_texto),
+            textoConfirmar = stringResource(R.string.boton_desconectar),
+            onConfirmar = { onEvento(EventoUi.ConfirmarDialogo) },
+            onCancelar = cerrar
+        )
+        is DialogoUi.Confirmar -> when (val c = dialogo.comando) {
+            is Comando.IniciarMision -> {
+                val mision = uiState.misiones.firstOrNull { it.id == c.misionId }
+                DialogoConfirmacion(
+                    titulo = stringResource(R.string.dlg_iniciar_titulo, mision?.nombre ?: c.misionId),
+                    texto = (mision?.puntos?.size ?: 0).let { n -> pluralStringResource(R.plurals.dlg_iniciar_texto, n, n) },
+                    textoConfirmar = stringResource(R.string.boton_iniciar),
+                    onConfirmar = {
+                        onEvento(EventoUi.ConfirmarDialogo)
+                        onIniciarConfirmado() // Figma: confirmar inicio lleva a Supervision
+                    },
+                    onCancelar = cerrar
+                )
+            }
+            Comando.CancelarMision -> DialogoConfirmacion(
+                titulo = stringResource(R.string.dlg_cancelar_titulo),
+                texto = stringResource(R.string.dlg_cancelar_texto),
+                textoConfirmar = stringResource(R.string.dlg_cancelar_confirmar),
+                onConfirmar = { onEvento(EventoUi.ConfirmarDialogo) },
+                onCancelar = cerrar,
+                destructivo = true
+            )
+            Comando.RegresarAPuntoSeguro -> DialogoConfirmacion(
+                titulo = stringResource(R.string.dlg_regresar_titulo),
+                texto = stringResource(
+                    if (uiState.datosAntiguos) R.string.dlg_regresar_texto_sin_conexion else R.string.dlg_regresar_texto
+                ),
+                textoConfirmar = stringResource(R.string.cmd_regresar),
+                onConfirmar = { onEvento(EventoUi.ConfirmarDialogo) },
+                onCancelar = cerrar
+            )
+            else -> cerrar() // el resto no pide confirmacion
+        }
+    }
+}
