@@ -1,57 +1,34 @@
 package com.example.tpo_bot_uade_app.ui.theme
 
-import android.app.Activity
-import android.os.Build
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 
-private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
-)
-
-private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+// Un solo tema, oscuro, con colores fijos: en una HMI el color de cada estado
+// tiene que ser siempre el mismo (por eso no se usan los "colores dinamicos" de Android 12+).
+private val EsquemaHmi = darkColorScheme(
+    primary = Primario,
+    onPrimary = SobrePrimario,
+    secondary = TextoSecundario,
+    onSecondary = Fondo,
+    background = Fondo,
+    onBackground = Texto,
+    surface = Superficie,
+    onSurface = Texto,
+    surfaceVariant = SuperficieAlta,
+    onSurfaceVariant = TextoSecundario,
+    surfaceContainer = Superficie,
+    surfaceContainerHigh = Superficie,
+    surfaceContainerHighest = Superficie,   // las Card de Material usan este color: tarjetas = superficie
+    outline = SuperficieAlta,
+    error = ErrorHmi,
+    onError = Texto
 )
 
 @Composable
-fun TPO_Bot_UADE_AppTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
-    content: @Composable () -> Unit
-) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
-
+fun TPO_Bot_UADE_AppTheme(content: @Composable () -> Unit) {
     MaterialTheme(
-        colorScheme = colorScheme,
+        colorScheme = EsquemaHmi,
         typography = Typography,
         content = content
     )
