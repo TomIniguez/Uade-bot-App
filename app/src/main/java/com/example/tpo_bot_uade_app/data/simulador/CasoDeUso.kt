@@ -2,20 +2,14 @@ package com.example.tpo_bot_uade_app.data.simulador
 
 import com.example.tpo_bot_uade_app.domain.Umbrales
 import com.example.tpo_bot_uade_app.domain.model.DefinicionMision
+import com.example.tpo_bot_uade_app.domain.model.Plano
+import com.example.tpo_bot_uade_app.domain.model.PuntoControl
 import com.example.tpo_bot_uade_app.domain.model.RobotInfo
 
 // TODO lo especifico del caso de uso vive aca: ronda nocturna de inspeccion en un deposito
 // logistico con un Go2. Si el grupo elige otro servicio, se cambia este archivo y nada mas.
 
-// Un punto de control del plano (40 m x 24 m, origen abajo a la izquierda).
-data class PuntoControl(
-    val id: String,
-    val nombre: String,
-    val x: Float,
-    val y: Float,
-    val temperaturaBase: Float
-)
-
+// Plano de 40 m x 24 m, origen abajo a la izquierda.
 object CasoDeUso {
 
     val BASE = PuntoControl("BASE", "Base de carga", 2f, 2f, 22f)
@@ -34,6 +28,8 @@ object CasoDeUso {
     const val ALTO_PLANO_M = 24f
 
     fun punto(id: String): PuntoControl = PUNTOS.first { it.id == id }
+
+    val PLANO = Plano(ANCHO_PLANO_M, ALTO_PLANO_M, BASE, PUNTOS)
 
     val ROBOTS = listOf(
         RobotInfo("go2-01", "Go2 Depósito Norte", "Go2", disponible = true, bateriaPct = 86),
@@ -69,7 +65,7 @@ object CasoDeUso {
     const val TICKS_REINTENTO = 3
     const val CONSUMO_QUIETO = 0.02f
     const val CONSUMO_MOVIMIENTO = 0.15f
-    const val CARGA_EN_BASE = 1f
+    const val CARGA_EN_BASE = 0.05f            // lenta a proposito: go2-02 tarda ~2 min en llegar a 30 % (demo de inicio rechazado)
     const val SENAL_MIN = 70
     const val SENAL_MAX = 95
 }

@@ -12,6 +12,7 @@ import com.example.tpo_bot_uade_app.domain.model.EstadoOperativo
 import com.example.tpo_bot_uade_app.domain.model.EventoRobot
 import com.example.tpo_bot_uade_app.domain.model.MisionActiva
 import com.example.tpo_bot_uade_app.domain.model.Posicion
+import com.example.tpo_bot_uade_app.domain.model.PuntoControl
 import com.example.tpo_bot_uade_app.domain.model.RegistroMision
 import com.example.tpo_bot_uade_app.domain.model.RespuestaComando
 import com.example.tpo_bot_uade_app.domain.model.RobotInfo
@@ -477,7 +478,16 @@ class SimuladorRobot(
             resultado != null -> null
             else -> CasoDeUso.punto(m.puntos[indicePunto]).nombre
         }
-        return MisionActiva(m.id, m.nombre, estadoMision, progreso, puntoActual, m.puntos.size)
+        return MisionActiva(
+            id = m.id,
+            nombre = m.nombre,
+            estado = estadoMision,
+            progresoPct = progreso,
+            puntoActual = puntoActual,
+            totalPuntos = m.puntos.size,
+            puntosCompletados = indicePunto.coerceAtMost(m.puntos.size),
+            puntosOmitidos = m.puntos.filter { it in omitidos }
+        )
     }
 
     // (puntos completados + fraccion del tramo actual) / total. Llega a 100 solo al completar.

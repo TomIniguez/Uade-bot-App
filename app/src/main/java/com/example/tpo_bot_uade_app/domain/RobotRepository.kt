@@ -4,6 +4,7 @@ import com.example.tpo_bot_uade_app.domain.model.Alerta
 import com.example.tpo_bot_uade_app.domain.model.Comando
 import com.example.tpo_bot_uade_app.domain.model.DefinicionMision
 import com.example.tpo_bot_uade_app.domain.model.EventoRobot
+import com.example.tpo_bot_uade_app.domain.model.Plano
 import com.example.tpo_bot_uade_app.domain.model.RespuestaComando
 import com.example.tpo_bot_uade_app.domain.model.RobotInfo
 import com.example.tpo_bot_uade_app.domain.model.Telemetria
@@ -15,6 +16,7 @@ import kotlinx.coroutines.flow.StateFlow
 interface RobotRepository {
     val robots: List<RobotInfo>
     val misiones: List<DefinicionMision>
+    val plano: Plano                            // puntos de control y su ubicacion (mini mapa)
     val telemetria: StateFlow<Telemetria?>      // null = todavia no conectado
     val alertas: StateFlow<List<Alerta>>
     val eventos: SharedFlow<EventoRobot>        // hechos puntuales para el historial

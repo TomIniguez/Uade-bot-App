@@ -42,4 +42,88 @@
     <string name="unidad_celsius">°C</string>
     <string name="unidad_ms">m/s</string>
     <string name="unidad_pct">%</string>
+
+    <!-- Navegacion -->
+    <string name="nav_supervision">Supervisión</string>
+    <string name="nav_misiones">Misiones</string>
+
+    <!-- Ordenes -->
+    <string name="cmd_iniciar">Iniciar misión</string>
+    <string name="cmd_pausar">Pausar misión</string>
+    <string name="cmd_reanudar">Reanudar misión</string>
+    <string name="cmd_cancelar">Cancelar misión</string>
+    <string name="cmd_regresar">Regresar a punto seguro</string>
+    <string name="cmd_detencion">Detención operativa</string>
+    <string name="cmd_reconocer">Reconocer alerta</string>
+    <string name="cmd_resolver">Decisión ante incidente</string>
+    <string name="boton_iniciar">Iniciar</string>
+    <string name="boton_cancelar">Cancelar</string>
+    <string name="detencion_leyenda">Orden de software. No reemplaza la parada de emergencia física.</string>
+
+    <!-- Estado de una orden -->
+    <string name="ec_pendiente">Pendiente</string>
+    <string name="ec_confirmada">Confirmada</string>
+    <string name="ec_rechazada">Rechazada</string>
+    <string name="ec_sin_respuesta">Sin respuesta</string>
+    <string name="ec_linea">%1$s · %2$s · %3$s</string>
+    <string name="ec_sin_respuesta_detalle">No hubo respuesta del robot. La orden no fue confirmada.</string>
+    <string name="ultima_orden">Última orden</string>
+    <string name="ultima_orden_ninguna">Todavía no se envió ninguna orden.</string>
+    <string name="seccion_control">Control</string>
+
+    <!-- Motivos de boton deshabilitado -->
+    <string name="mot_sin_telemetria">Esperando datos del robot</string>
+    <string name="mot_pendiente">Hay otra orden esperando respuesta</string>
+    <string name="mot_sin_conexion">Sin conexión con el robot</string>
+    <string name="mot_datos_antiguos">Los datos del robot no están actualizados</string>
+    <string name="mot_no_en_base">El robot tiene que estar en la base</string>
+    <string name="mot_sin_mision">No hay una misión en curso</string>
+    <string name="mot_no_pausada">La misión no está pausada</string>
+    <string name="mot_sin_mision_cancelar">No hay una misión para cancelar</string>
+    <string name="mot_ya_en_base">El robot ya está en la base</string>
+    <string name="mot_ya_regresando">El robot ya está regresando</string>
+    <string name="mot_ya_detenido">El robot ya está detenido</string>
+    <string name="mot_bateria_inicio">Batería insuficiente (%1$d %%, mínimo %2$d %%)</string>
+    <string name="mot_bateria_reanudar">Batería insuficiente para reanudar (%1$d %%)</string>
+    <string name="mot_alerta_critica">Hay una alerta crítica sin reconocer</string>
+    <string name="mot_sin_incidente">No hay un incidente esperando decisión</string>
+    <string name="mot_ya_reconocida">La alerta ya fue reconocida</string>
+    <string name="mot_requiere_decision">Esta alerta requiere una decisión</string>
+    <string name="mot_decision_no_valida">Decisión no válida para este incidente</string>
+
+    <!-- Mision -->
+    <string name="em_en_curso">En curso</string>
+    <string name="em_pausada">Pausada</string>
+    <string name="em_completada">Completada</string>
+    <string name="em_cancelada">Cancelada</string>
+    <string name="em_abortada">Abortada</string>
+    <string name="mision_ninguna">Sin misión</string>
+    <string name="mision_ninguna_ayuda">Elegí una misión en la pestaña Misiones.</string>
+    <string name="mision_progreso">%1$d %%</string>
+    <string name="mision_punto_actual">Punto actual: %1$s</string>
+    <string name="mision_puntos">%1$d de %2$d puntos</string>
+    <string name="misiones_en_curso">Misión en curso</string>
+    <string name="misiones_disponibles">Misiones disponibles</string>
+    <string name="mapa_descripcion">Mapa del depósito. Robot en %1$s.</string>
+
+    <!-- Dialogos -->
+    <string name="dlg_iniciar_titulo">¿Iniciar «%1$s»?</string>
+    <string name="dlg_cancelar_titulo">¿Cancelar la misión?</string>
+    <string name="dlg_cancelar_texto">El robot deja de inspeccionar y vuelve solo a la base. La misión queda como cancelada.</string>
+    <string name="dlg_cancelar_confirmar">Cancelar misión</string>
+    <string name="dlg_regresar_titulo">¿Regresar a punto seguro?</string>
+    <string name="dlg_regresar_texto">El robot interrumpe lo que está haciendo y vuelve a la base de carga.</string>
+    <string name="dlg_regresar_texto_sin_conexion">No hay conexión: la orden se va a enviar, pero puede que no llegue. Revisá después si fue confirmada.</string>
+    <string name="dlg_desconectar_titulo">¿Desconectar el robot?</string>
+    <string name="dlg_desconectar_texto">La app deja de recibir datos. El robot sigue con lo que estaba haciendo.</string>
+
+    <!-- Plurales (one = 1, other = resto) -->
+    <plurals name="misiones_resumen">
+        <item quantity="one">%1$d punto · %2$d min aprox.</item>
+        <item quantity="other">%1$d puntos · %2$d min aprox.</item>
+    </plurals>
+    <plurals name="dlg_iniciar_texto">
+        <item quantity="one">El robot saldrá de la base y recorrerá %1$d punto de control.</item>
+        <item quantity="other">El robot saldrá de la base y recorrerá %1$d puntos de control.</item>
+    </plurals>
 </resources>
