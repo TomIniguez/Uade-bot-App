@@ -13,6 +13,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -33,7 +34,7 @@ fun BarraInferior(rutaActual: String?, alertasActivas: Int, onIr: (Destino) -> U
     NavigationBar {
         Destino.entries.forEach { destino ->
             val descripcion = if (destino == Destino.ALERTAS && alertasActivas > 0)
-                stringResource(R.string.nav_alertas_contador, alertasActivas) else stringResource(destino.textoId)
+                pluralStringResource(R.plurals.nav_alertas_contador, alertasActivas, alertasActivas) else stringResource(destino.textoId)
             NavigationBarItem(
                 selected = rutaActual == destino.ruta,
                 onClick = { onIr(destino) },

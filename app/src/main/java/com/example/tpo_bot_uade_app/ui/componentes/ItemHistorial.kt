@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.tpo_bot_uade_app.R
@@ -76,7 +77,11 @@ fun ItemHistorial(mision: RegistroMision, onClick: () -> Unit, modifier: Modifie
         icono = icono,
         color = colorDe(nivel),
         titulo = stringResource(R.string.h_item_mision, mision.nombre, textoEstadoMision(mision.resultado)),
-        detalle = stringResource(R.string.h_item_mision_detalle, mision.puntosInspeccionados, mision.totalPuntos, mision.anomalias),
+        detalle = stringResource(
+            R.string.h_item_mision_detalle,
+            pluralStringResource(R.plurals.p_puntos_inspeccionados, mision.totalPuntos, mision.puntosInspeccionados, mision.totalPuntos),
+            pluralStringResource(R.plurals.p_anomalias, mision.anomalias, mision.anomalias)
+        ),
         fecha = fechaHora(mision.finMs),
         modifier = modifier,
         onClick = onClick
