@@ -130,4 +130,14 @@ class SimulatedRobotRepositoryTest {
         advanceTimeBy(1_001)
         assertEquals(4, timestamps.size)
     }
+
+    @Test
+    fun robots_informanLaBateriaActualDelRobotSimulado() = runTest {
+        val repo = repositorio()
+        repo.conectar("go2-02")
+        repo.fijarBateria(55)
+        repo.desconectar()
+        assertEquals(55, repo.robots.first { it.id == "go2-02" }.bateriaPct)
+        assertEquals(86, repo.robots.first { it.id == "go2-01" }.bateriaPct) // el resto, del catalogo
+    }
 }

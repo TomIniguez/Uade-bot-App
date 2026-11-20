@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.StateFlow
 // Lo unico que el ViewModel sabe del robot. Hoy lo implementa el simulador;
 // con un robot real se escribe otra clase que cumpla esta interfaz.
 interface RobotRepository {
-    val robots: List<RobotInfo>
+    val robots: List<RobotInfo>                 // se lee de nuevo cada vez: la bateria puede cambiar
     val misiones: List<DefinicionMision>
     val plano: Plano                            // puntos de control y su ubicacion (mini mapa)
     val telemetria: StateFlow<Telemetria?>      // null = todavia no conectado
