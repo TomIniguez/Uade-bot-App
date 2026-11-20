@@ -1,6 +1,6 @@
 package com.example.tpo_bot_uade_app.data.simulador
 
-import com.example.tpo_bot_uade_app.domain.ReglasComando
+import com.example.tpo_bot_uade_app.domain.Umbrales
 import com.example.tpo_bot_uade_app.domain.model.DefinicionMision
 import com.example.tpo_bot_uade_app.domain.model.RobotInfo
 
@@ -49,17 +49,17 @@ object CasoDeUso {
     )
 
     // ---------- Umbrales ----------
-    const val BATERIA_MINIMA_INICIO = ReglasComando.BATERIA_MINIMA_INICIO   // 30 %
-    const val BATERIA_BAJA = 20
-    const val BATERIA_CRITICA = ReglasComando.BATERIA_CRITICA               // 10 %
-    const val UMBRAL_TEMPERATURA = 45f
+    const val BATERIA_MINIMA_INICIO = Umbrales.BATERIA_MINIMA_INICIO
+    const val BATERIA_BAJA = Umbrales.BATERIA_BAJA
+    const val BATERIA_CRITICA = Umbrales.BATERIA_CRITICA
+    const val UMBRAL_TEMPERATURA = Umbrales.UMBRAL_TEMPERATURA
     const val TEMPERATURA_ANOMALIA = 58f       // lectura cuando se inyecta una anomalia
 
     // ---------- Tiempos ----------
     const val LATENCIA_MIN_MS = 300L
     const val LATENCIA_MAX_MS = 900L
     const val TIMEOUT_COMANDO_MS = 3000L
-    const val DATOS_ANTIGUOS_MS = 3000L
+    const val DATOS_ANTIGUOS_MS = Umbrales.DATOS_ANTIGUOS_MS
     const val DEMORA_CONEXION_MS = 600L
     const val PAUSA_POR_DESCONEXION_TICKS = 20
 

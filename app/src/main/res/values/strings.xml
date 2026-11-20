@@ -1,6 +1,45 @@
 <resources>
     <string name="app_name">TPO_Bot_UADE_App</string>
 
-    <!-- Fase 0: pantalla de transicion mientras se migra a la HMI simulada -->
-    <string name="en_construccion">HMI del robot: en construcción</string>
+    <!-- Seleccion de robot -->
+    <string name="seleccion_titulo">Elegí un robot</string>
+    <string name="seleccion_pie">Robot simulado. No requiere conexión a internet.</string>
+    <string name="robot_modelo_id">%1$s · %2$s</string>
+    <string name="robot_bateria_baja">Batería baja</string>
+    <string name="robot_fuera_de_linea">Fuera de línea</string>
+    <string name="robot_motivo_fuera_de_linea">Este robot no está disponible para conectarse.</string>
+    <string name="boton_conectar">Conectar</string>
+    <string name="boton_desconectar">Desconectar</string>
+
+    <!-- Conexion y bateria -->
+    <string name="conexion_ok">Conectado · %1$d %%</string>
+    <string name="conexion_sin">Sin conexión</string>
+    <string name="conexion_datos_antiguos">Datos de hace %1$d s</string>
+    <string name="bateria_pct">%1$d %%</string>
+
+    <!-- Estados operativos -->
+    <string name="estado_en_base">En base</string>
+    <string name="estado_en_mision">En misión</string>
+    <string name="estado_pausado">Pausado</string>
+    <string name="estado_esperando_decision">Esperando decisión</string>
+    <string name="estado_regresando">Regresando</string>
+    <string name="estado_detenido">Detenido</string>
+
+    <!-- Supervision -->
+    <string name="ultima_actualizacion">Actualizado hace %1$d s</string>
+    <string name="seccion_servicio">Inspección</string>
+    <string name="seccion_robot">Robot</string>
+    <string name="tele_temperatura">Temperatura</string>
+    <string name="tele_puntos">Puntos</string>
+    <string name="tele_anomalias">Anomalías</string>
+    <string name="tele_zona">Zona</string>
+    <string name="tele_velocidad">Velocidad</string>
+    <string name="tele_senal">Señal</string>
+    <string name="valor_de_total">%1$d de %2$d</string>
+    <string name="sin_dato">—</string>
+
+    <!-- Unidades -->
+    <string name="unidad_celsius">°C</string>
+    <string name="unidad_ms">m/s</string>
+    <string name="unidad_pct">%</string>
 </resources>

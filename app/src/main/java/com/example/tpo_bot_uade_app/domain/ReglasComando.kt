@@ -50,8 +50,6 @@ data class ContextoComando(
 // Ojo: esto solo decide que muestra la interfaz. El robot (simulador) vuelve a validar cada orden.
 object ReglasComando {
 
-    const val BATERIA_MINIMA_INICIO = 30
-    const val BATERIA_CRITICA = 10
 
     // Calcula la habilitacion de todos los comandos de una vez (para el UiState).
     fun todas(contexto: ContextoComando): Map<TipoComando, Habilitacion> =
@@ -87,7 +85,7 @@ object ReglasComando {
         return when (tipo) {
             TipoComando.INICIAR_MISION -> when {
                 t.estado != EstadoOperativo.EN_BASE -> Habilitacion.no(MotivoBloqueo.ROBOT_NO_EN_BASE)
-                t.bateriaPct < BATERIA_MINIMA_INICIO -> Habilitacion.no(MotivoBloqueo.BATERIA_INSUFICIENTE)
+                t.bateriaPct < Umbrales.BATERIA_MINIMA_INICIO -> Habilitacion.no(MotivoBloqueo.BATERIA_INSUFICIENTE)
                 hayCriticaSinReconocer(contexto.alertas) -> Habilitacion.no(MotivoBloqueo.ALERTA_CRITICA_SIN_RECONOCER)
                 else -> Habilitacion.SI
             }
@@ -98,7 +96,7 @@ object ReglasComando {
 
             TipoComando.REANUDAR_MISION -> when {
                 t.estado != EstadoOperativo.PAUSADO -> Habilitacion.no(MotivoBloqueo.MISION_NO_PAUSADA)
-                t.bateriaPct <= BATERIA_CRITICA -> Habilitacion.no(MotivoBloqueo.BATERIA_INSUFICIENTE)
+                t.bateriaPct <= Umbrales.BATERIA_CRITICA -> Habilitacion.no(MotivoBloqueo.BATERIA_INSUFICIENTE)
                 else -> Habilitacion.SI
             }
 
