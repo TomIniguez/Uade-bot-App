@@ -8,6 +8,7 @@ import com.example.tpo_bot_uade_app.domain.model.DefinicionMision
 import com.example.tpo_bot_uade_app.domain.model.EstadoComando
 import com.example.tpo_bot_uade_app.domain.model.EstadoConexion
 import com.example.tpo_bot_uade_app.domain.model.EventoRobot
+import com.example.tpo_bot_uade_app.domain.model.Plano
 import com.example.tpo_bot_uade_app.domain.model.RespuestaComando
 import com.example.tpo_bot_uade_app.domain.model.RobotInfo
 import com.example.tpo_bot_uade_app.domain.model.Telemetria
@@ -40,6 +41,7 @@ class SimulatedRobotRepository(
 
     override val robots: List<RobotInfo> = CasoDeUso.ROBOTS
     override val misiones: List<DefinicionMision> = CasoDeUso.MISIONES
+    override val plano: Plano = CasoDeUso.PLANO
 
     private val _telemetria = MutableStateFlow<Telemetria?>(null)
     override val telemetria: StateFlow<Telemetria?> = _telemetria.asStateFlow()

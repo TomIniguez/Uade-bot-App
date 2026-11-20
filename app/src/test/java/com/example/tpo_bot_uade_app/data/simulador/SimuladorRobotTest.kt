@@ -165,8 +165,9 @@ class SimuladorRobotTest {
     @Test
     fun enBase_laBateriaSeCarga() {
         val sim = simulador("go2-02") // 24 %
-        repeat(10) { sim.tick() }
-        assertEquals(34, sim.telemetria().bateriaPct)
+        assertEquals(EstadoComando.RECHAZADA, sim.enviar(Comando.IniciarMision("M3")).estado)
+        repeat(120) { sim.tick() } // 120 x 0,05 % = 6 %
+        assertEquals(30, sim.telemetria().bateriaPct)
         assertEquals(EstadoComando.CONFIRMADA, sim.enviar(Comando.IniciarMision("M3")).estado)
     }
 

@@ -17,7 +17,9 @@ data class MisionActiva(
     val estado: EstadoMision,
     val progresoPct: Int,          // 0..100
     val puntoActual: String?,      // punto hacia el que va o que esta inspeccionando
-    val totalPuntos: Int
+    val totalPuntos: Int,
+    val puntosCompletados: Int = 0,                 // inspeccionados + omitidos (para el mini mapa)
+    val puntosOmitidos: List<String> = emptyList()  // ids de los puntos salteados por un obstaculo
 )
 
 // Las tres variables propias del servicio (ronda de inspeccion).

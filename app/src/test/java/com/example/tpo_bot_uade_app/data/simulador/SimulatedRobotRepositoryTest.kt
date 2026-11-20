@@ -8,6 +8,7 @@ import com.example.tpo_bot_uade_app.domain.model.EventoRobot
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.currentTime
 import kotlinx.coroutines.test.runCurrent
@@ -117,11 +118,16 @@ class SimulatedRobotRepositoryTest {
     @Test
     fun velocidadX4_cuatroTicksPorSegundo() = runTest {
         val repo = repositorio()
-        repo.conectar("go2-02") // en base se carga 1 % por tick
-        val inicial = repo.telemetria.value!!.bateriaPct
+        repo.conectar("go2-01")
         repo.fijarVelocidad(4)
-        advanceTimeBy(2_100)
-        // primer tick a 1000 ms (ya estaba esperando con x1), despues cada 250 ms
-        assertTrue(repo.telemetria.value!!.bateriaPct - inicial >= 5)
+        advanceTimeBy(1_100) // termina la espera que ya estaba en curso con x1
+        // Cada tick publica telemetria con un timestamp nuevo: contamos cuantos llegan en 1 segundo.
+        val timestamps = mutableSetOf<Long>()
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+            repo.telemetria.collect { it?.let { t -> timestamps += t.timestampMs } }
+        }
+        timestamps.clear()
+        advanceTimeBy(1_001)
+        assertEquals(4, timestamps.size)
     }
 }
