@@ -57,7 +57,12 @@ class RegistradorHistorial(
                 }
                 guardar(
                     CategoriaEvento.MISION, severidad, texto(titulo),
-                    texto(R.string.h_mision_detalle, r.nombre, r.puntosInspeccionados, r.totalPuntos, r.anomalias),
+                    texto(
+                        R.string.h_mision_detalle,
+                        r.nombre,
+                        cantidad(R.plurals.p_puntos_inspeccionados, r.totalPuntos, r.puntosInspeccionados, r.totalPuntos),
+                        cantidad(R.plurals.p_anomalias, r.anomalias, r.anomalias)
+                    ),
                     r.robotId
                 )
             }
@@ -102,6 +107,8 @@ class RegistradorHistorial(
     // ---------- Textos ----------
 
     private fun texto(id: Int, vararg args: Any): String = context.getString(id, *args)
+
+    private fun cantidad(id: Int, n: Int, vararg args: Any): String = context.resources.getQuantityString(id, n, *args)
 
     private fun textoComando(tipo: TipoComando) = texto(
         when (tipo) {

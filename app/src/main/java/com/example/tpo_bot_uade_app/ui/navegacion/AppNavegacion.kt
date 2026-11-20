@@ -39,11 +39,13 @@ import com.example.tpo_bot_uade_app.ui.robot.EventoUi
 import com.example.tpo_bot_uade_app.ui.robot.RobotUiState
 import com.example.tpo_bot_uade_app.ui.seleccion.SeleccionRobotScreen
 import com.example.tpo_bot_uade_app.ui.supervision.SupervisionScreen
+import com.example.tpo_bot_uade_app.ui.telemetria.TelemetriaScreen
 import com.example.tpo_bot_uade_app.ui.theme.Fondo
 
 // Arma la estructura de la app: barra superior, contenido segun la ruta, Detencion operativa
 // fija y barra inferior. Rutas como texto ("supervision", "misiones") para que sea facil de leer.
 private const val RUTA_PRUEBAS = "pruebas"
+private const val RUTA_TELEMETRIA = "telemetria"
 
 // La Detencion operativa se muestra en estas pantallas (Figma). En el panel de pruebas no.
 private val RUTAS_CON_DETENCION = setOf(Destino.SUPERVISION.ruta, Destino.MISIONES.ruta, Destino.ALERTAS.ruta)
@@ -110,12 +112,17 @@ fun AppNavegacion(
                         modifier = Modifier.background(Fondo).padding(horizontal = 16.dp, vertical = 8.dp)
                     )
                 }
-                BarraInferior(rutaActual, uiState.alertasActivas.size) { ir(it.ruta) }
+                // Telemetria detallada y Pruebas se abren desde Supervision: esa pestana queda marcada.
+                val rutaBarra = if (rutaActual == RUTA_TELEMETRIA || rutaActual == RUTA_PRUEBAS) Destino.SUPERVISION.ruta else rutaActual
+                BarraInferior(rutaBarra, uiState.alertasActivas.size) { ir(it.ruta) }
             }
         }
     ) { padding ->
         NavHost(navController, startDestination = Destino.SUPERVISION.ruta, modifier = Modifier.padding(padding)) {
-            composable(Destino.SUPERVISION.ruta) { SupervisionScreen(uiState, onEvento) }
+            composable(Destino.SUPERVISION.ruta) {
+                SupervisionScreen(uiState, onEvento, onVerTelemetria = { navController.navigate(RUTA_TELEMETRIA) { launchSingleTop = true } })
+            }
+            composable(RUTA_TELEMETRIA) { TelemetriaScreen(uiState, onVolver = { navController.popBackStack() }) }
             composable(Destino.MISIONES.ruta) { MisionesScreen(uiState, onEvento) }
             composable(Destino.ALERTAS.ruta) { AlertasScreen(uiState, onEvento) }
             composable(Destino.HISTORIAL.ruta) { HistorialScreen(historial, onEventoHistorial) }

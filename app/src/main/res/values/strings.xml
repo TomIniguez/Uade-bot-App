@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TPO_Bot_UADE_App</string>
+    <string name="app_name">HMI Go2</string>
 
     <!-- Seleccion de robot -->
     <string name="seleccion_titulo">Elegí un robot</string>
@@ -27,8 +27,6 @@
 
     <!-- Supervision -->
     <string name="ultima_actualizacion">Actualizado hace %1$d s</string>
-    <string name="seccion_servicio">Inspección</string>
-    <string name="seccion_robot">Robot</string>
     <string name="tele_temperatura">Temperatura</string>
     <string name="tele_puntos">Puntos</string>
     <string name="tele_anomalias">Anomalías</string>
@@ -42,10 +40,33 @@
     <string name="unidad_celsius">°C</string>
     <string name="unidad_ms">m/s</string>
     <string name="unidad_pct">%</string>
+    <string name="unidad_m">m</string>
+    <string name="unidad_grados">°</string>
+
+    <!-- Telemetria detallada -->
+    <string name="ver_telemetria">Ver toda la telemetría</string>
+    <string name="tele_titulo">Telemetría detallada</string>
+    <string name="tg_enlace">Enlace</string>
+    <string name="tg_energia">Energía</string>
+    <string name="tg_operacion">Operación</string>
+    <string name="tg_ubicacion">Ubicación y movimiento</string>
+    <string name="tg_servicio">Servicio de inspección</string>
+    <string name="tg_alertas">Alertas</string>
+    <string name="tele_conexion">Conexión</string>
+    <string name="tele_conectado">Conectado</string>
+    <string name="tele_actualizacion">Última actualización</string>
+    <string name="tele_hace">hace %1$d s</string>
+    <string name="tele_bateria">Batería</string>
+    <string name="tele_estado">Estado</string>
+    <string name="tele_mision">Misión</string>
+    <string name="tele_progreso">Progreso</string>
+    <string name="tele_x">Posición x</string>
+    <string name="tele_y">Posición y</string>
+    <string name="tele_rumbo">Rumbo</string>
+    <string name="tele_alertas_activas">Activas sin reconocer</string>
 
     <!-- Alertas -->
     <string name="nav_alertas">Alertas</string>
-    <string name="nav_alertas_contador">Alertas, %1$d activas</string>
     <string name="alertas_activas">Activas</string>
     <string name="alertas_reconocidas">Reconocidas</string>
     <string name="alertas_vacio">Sin alertas activas</string>
@@ -114,7 +135,7 @@
     <string name="h_borrar_titulo">¿Borrar todo el historial?</string>
     <string name="h_borrar_texto">Se eliminan todas las misiones y eventos guardados en este teléfono. No se puede deshacer.</string>
     <string name="h_item_mision">%1$s · %2$s</string>
-    <string name="h_item_mision_detalle">%1$d de %2$d puntos inspeccionados · %3$d anomalías</string>
+    <string name="h_item_mision_detalle">%1$s · %2$s</string>
     <string name="h_resultado">Resultado</string>
     <string name="h_robot">Robot</string>
     <string name="h_inicio">Inicio</string>
@@ -128,7 +149,7 @@
     <string name="h_mision_completada">Misión completada</string>
     <string name="h_mision_cancelada">Misión cancelada</string>
     <string name="h_mision_abortada">Misión abortada</string>
-    <string name="h_mision_detalle">%1$s · %2$d de %3$d puntos · %4$d anomalías</string>
+    <string name="h_mision_detalle">%1$s · %2$s · %3$s</string>
     <string name="h_conexion_perdida">Conexión perdida</string>
     <string name="h_conexion_recuperada">Conexión recuperada</string>
     <string name="h_comando">%1$s · %2$s</string>
@@ -193,7 +214,6 @@
     <string name="mision_ninguna_ayuda">Elegí una misión en la pestaña Misiones.</string>
     <string name="mision_progreso">%1$d %%</string>
     <string name="mision_punto_actual">Punto actual: %1$s</string>
-    <string name="mision_puntos">%1$d de %2$d puntos recorridos</string>
     <string name="misiones_en_curso">Misión en curso</string>
     <string name="misiones_disponibles">Misiones disponibles</string>
     <string name="mapa_descripcion">Mapa del depósito. Robot en %1$s.</string>
@@ -217,5 +237,21 @@
     <plurals name="dlg_iniciar_texto">
         <item quantity="one">El robot saldrá de la base y recorrerá %1$d punto de control.</item>
         <item quantity="other">El robot saldrá de la base y recorrerá %1$d puntos de control.</item>
+    </plurals>
+    <plurals name="p_puntos_recorridos">
+        <item quantity="one">%1$d de %2$d punto recorrido</item>
+        <item quantity="other">%1$d de %2$d puntos recorridos</item>
+    </plurals>
+    <plurals name="p_puntos_inspeccionados">
+        <item quantity="one">%1$d de %2$d punto inspeccionado</item>
+        <item quantity="other">%1$d de %2$d puntos inspeccionados</item>
+    </plurals>
+    <plurals name="p_anomalias">
+        <item quantity="one">%1$d anomalía</item>
+        <item quantity="other">%1$d anomalías</item>
+    </plurals>
+    <plurals name="nav_alertas_contador">
+        <item quantity="one">Alertas, %1$d activa</item>
+        <item quantity="other">Alertas, %1$d activas</item>
     </plurals>
 </resources>

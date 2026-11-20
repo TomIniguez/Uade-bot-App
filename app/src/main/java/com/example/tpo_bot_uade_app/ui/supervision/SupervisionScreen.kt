@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowForward
 import androidx.compose.material.icons.automirrored.outlined.Undo
 import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material.icons.outlined.Pause
@@ -18,7 +19,9 @@ import androidx.compose.material.icons.outlined.ReportProblem
 import androidx.compose.material.icons.outlined.TaskAlt
 import androidx.compose.material.icons.outlined.Thermostat
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -49,7 +52,12 @@ import com.example.tpo_bot_uade_app.ui.theme.TextoSecundario
 // Panel de supervision: pantalla de inicio. Combina el panel (estado, mision, mapa, servicio)
 // con el control (ultima orden y botones). La Detencion operativa esta fija abajo, fuera de esta pantalla.
 @Composable
-fun SupervisionScreen(uiState: RobotUiState, onEvento: (EventoUi) -> Unit, modifier: Modifier = Modifier) {
+fun SupervisionScreen(
+    uiState: RobotUiState,
+    onEvento: (EventoUi) -> Unit,
+    onVerTelemetria: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     val t = uiState.telemetria
     if (t == null) {
         Box(modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
@@ -108,6 +116,11 @@ fun SupervisionScreen(uiState: RobotUiState, onEvento: (EventoUi) -> Unit, modif
                 antiguo = antiguo,
                 modifier = Modifier.weight(1f)
             )
+        }
+
+        TextButton(onClick = onVerTelemetria, modifier = Modifier.align(Alignment.End)) {
+            Text(stringResource(R.string.ver_telemetria))
+            Icon(Icons.AutoMirrored.Outlined.ArrowForward, contentDescription = null, modifier = Modifier.padding(start = 4.dp))
         }
 
         // Ultima orden: siempre visible, con texto e icono (no solo color).

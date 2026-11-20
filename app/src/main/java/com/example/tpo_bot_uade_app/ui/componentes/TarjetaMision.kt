@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.tpo_bot_uade_app.R
@@ -66,7 +67,7 @@ fun TarjetaMision(mision: MisionActiva?, modifier: Modifier = Modifier, antiguo:
                     modifier = Modifier.weight(1f)
                 )
                 Text(
-                    stringResource(R.string.mision_puntos, mision.puntosCompletados, mision.totalPuntos),
+                    pluralStringResource(R.plurals.p_puntos_recorridos, mision.totalPuntos, mision.puntosCompletados, mision.totalPuntos),
                     style = MaterialTheme.typography.bodyMedium,
                     color = TextoSecundario
                 )
