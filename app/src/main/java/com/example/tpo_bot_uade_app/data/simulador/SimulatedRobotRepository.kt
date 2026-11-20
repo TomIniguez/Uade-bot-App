@@ -39,7 +39,16 @@ class SimulatedRobotRepository(
     private val reloj: () -> Long = System::currentTimeMillis
 ) : RobotRepository, ControlSimulacion {
 
-    override val robots: List<RobotInfo> = CasoDeUso.ROBOTS
+    // El catalogo de robots, con la bateria real del robot que esta usando el simulador
+    // (el resto muestra la del catalogo: si se elige otro, el simulador arranca de cero con sus datos).
+    override val robots: List<RobotInfo>
+        get() {
+            val actual = robotActual
+            val bateria = synchronized(candado) { simulador?.telemetria()?.bateriaPct }
+            return CasoDeUso.ROBOTS.map { r ->
+                if (r.id == actual?.id && bateria != null) r.copy(bateriaPct = bateria) else r
+            }
+        }
     override val misiones: List<DefinicionMision> = CasoDeUso.MISIONES
     override val plano: Plano = CasoDeUso.PLANO
 

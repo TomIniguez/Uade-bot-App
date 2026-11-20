@@ -97,7 +97,10 @@ class RobotViewModel(
     private fun desconectar() {
         viewModelScope.launch {
             repo.desconectar()
-            _uiState.update { it.copy(robotConectado = null, ultimoComando = null, comandosRecientes = emptyList()) }
+            // Se vuelve a leer la lista para que la seleccion muestre la bateria actual del robot.
+            _uiState.update {
+                it.copy(robots = repo.robots, robotConectado = null, ultimoComando = null, comandosRecientes = emptyList())
+            }
         }
     }
 
